@@ -1,0 +1,21 @@
+{
+  "name": "gloomjs",
+  "version": "1.0.7",
+  "description": "lightweight js framework",
+  "main": "./core/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "js",
+    "javascript",
+    "components",
+    "hooks",
+    "hook",
+    "frontend",
+    "web"
+  ],
+  "author": "alle0017!",
+  "license": "MIT",
+  "repository": {"url": "https://github.com/alle0017/gloom"}
+}
