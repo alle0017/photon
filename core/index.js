@@ -130,9 +130,30 @@ export const $watcher = ( callback, signal ) => signal.subscribeEffect( { update
  * @returns {Ref<T>}
  */
 export const $ref = () => {
+      /**
+       * @type {Set<( el: T )=>void>}
+       */
+      const _load = new Set();
+      let element;
+
       return {
-            element: undefined,
+            get element(){
+                  return element;
+            },
+            /**
+             * @param {T} component
+             */
+            set element( component ){
+                  element = component;
+                  _load.forEach( f => f(element) );
+            },
             __isRef__: true,
+            /**
+             * @param {(e: T)=>void} callback 
+             */
+            onLoad( callback ){
+                  _load.add( callback );
+            }
       };
 } 
 
@@ -190,6 +211,14 @@ export const useLifecycle = factory => {
       }
 }
 export const GApp = {
+      /**
+       * 
+       * @param {(app: typeof GApp) => void} pluginStarter 
+       */
+      use( pluginStarter ){
+            pluginStarter( this );
+            return this;
+      },
       /**
        * 
        * @param {(args: Record<string,unknown>) => Component} component 

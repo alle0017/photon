@@ -114,6 +114,7 @@ type Args = {
 } & Partial<ArgFlags>;
 
 type Ref<T extends HTMLElement> = {
+      onLoad( f: (e: T) => void ): void,
       element: T,
       __isRef__: boolean,
 }

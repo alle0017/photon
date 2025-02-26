@@ -175,7 +175,9 @@ export default class Signal {
             );
             const ticket = this.#subs.head;
 
-            return () => List.remove( this.#subs, ticket );
+            return () =>{
+                  List.remove( this.#subs, ticket );
+            };
       }
 
       /**

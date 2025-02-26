@@ -76,7 +76,34 @@ export default class Component {
        */
       static __register = new Map();
 
-      static #id = 0;;
+      static #id = 0;
+
+      /**
+       * @param {Tree[]} tree 
+       */
+      static toString( tree ){
+
+            if( !tree.length ){
+                  return '';
+            }
+
+            return tree.map( child => {
+
+
+                  if( child.tagName == ComponentParser.pointerToReactive )
+                        return '';
+
+                  if( child.isTextNode ){
+                        return child.tagName;
+                  }
+
+                  return /*html*/`
+                        <${child.tagName} ${child.attributes.map(([k,v]) => v? `${k}="${v}"`: k).reduce( (p,c) => p + ' ' + c )}>
+                              ${child.children.length? Component.toString( child.children ): ''}
+                        </${child.tagName}>
+                  `
+            }).reduce((p,v) => p + v);  
+      }
 
       #pid;
 
@@ -177,6 +204,10 @@ export default class Component {
             for( let i = 0; i < leaf.attributes.length; i++ ){
                   const value = leaf.attributes[i][1];
 
+                  if( leaf.attributes[i][0].at(0) == '@' ){
+                        leaf.attributes[i][0] = 'on' + leaf.attributes[i][0].slice(1,2).toUpperCase() + leaf.attributes[i][0].slice(2);
+                  } 
+
                   if( typeof value == 'string' && value.indexOf( ComponentParser.pointerToReactive ) >= 0 ){
                         props[leaf.attributes[i][0]] = args[idx + numOfArgs];
                         boundKeys.push(leaf.attributes[i][0])
@@ -186,7 +217,7 @@ export default class Component {
                   }
             }
 
-            const component = Component.__register.get( leaf.tagName )( props );
+            const component = Component.__register.get( leaf.tagName )( { ...props, __children: leaf.children } );
             let root;
             /**
              * @type {RenderingResult}
@@ -233,11 +264,6 @@ export default class Component {
                               res.usedArgs - numOfArgs:
                               numOfArgs;
                   res.skipAttributes = true;
-                  /*res = dom.createComponentList( component, leaf, args.slice( idx + numOfArgs, idx + leaf.numOfInterpolations ), refToArgs, refIdx + numOfArgs );
-                  root = document.createTextNode('');
-
-                  res.usedArgs -= numOfArgs;
-                  res.tag[0].before( root );*/
             }else{
 
                   res = {
@@ -1041,7 +1067,7 @@ export default class Component {
                         this.__error[i]( e );
                   }
                   console.log(e)
-            }     
+            }  
       }
 
       /**
@@ -1079,4 +1105,19 @@ export default class Component {
 
             return false;
       }
-}
+
+      /**
+       * @param {()=>void} eventHandler 
+       */
+      onMounted( eventHandler ){
+            this.__mount.push( eventHandler );
+            return this;
+      }
+      /**
+       * @param {()=>void} eventHandler 
+       */
+      onDisposed( eventHandler ){
+            this.__dispose.push( eventHandler );
+            return this;
+      }
+} 

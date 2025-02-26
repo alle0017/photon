@@ -37,8 +37,11 @@ export const remove = (list, node) => {
       if( !node.prev ){
             list.head = node.next;
       }else{
+            if( node.next ){
+                  node.next.prev = node.prev;
+            }
+            
             node.prev.next = node.next;
-            node.next.prev = node.prev;
       }
       return node.value;
 }
