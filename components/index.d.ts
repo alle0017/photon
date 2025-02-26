@@ -105,7 +105,7 @@ export type Theme = {
  * }
  * ```
  *  - `g-main`
- * * - `g-carousel`: 
+ * - `g-carousel`: 
  * ```javascript
  * { 
  *    theme?: string,
@@ -117,8 +117,25 @@ export type Theme = {
  *    iconColor?: string,
  * }
  * ```
+ * - `g-accordion`: 
+ * ```javascript
+ * { 
+ *    theme?: string,
+ * }
+ * ```
+ * - `g-accordion-item`: 
+ * ```javascript
+ * { 
+ *    theme?: string,
+ *    title?: string, 
+ *    dividerColor?: string,
+ *    iconColor?: string, 
+ *    collapsedIcon?: string, 
+ *    expandedIcon?: string,
+ * }
+ * ```
  * - `g-swipe`
- * * ```javascript
+ * ```javascript
  * { 
  *    ﹫swipe?: ( e: 'up' | 'down' | 'left' | 'right' ) => void,
  * }

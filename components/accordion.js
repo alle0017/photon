@@ -15,8 +15,7 @@ export default function Accordion({ theme, ...other }){
             .container {
                   display: grid;
                   width: 90%;
-                  padding: 10px;
-                  height: fit-content;
+                  min-height: max-content;
             }
       `;
 
@@ -24,6 +23,8 @@ export default function Accordion({ theme, ...other }){
             <style scoped=${scoped}>
                   .container[idx="${key}"] {
                         background-color: ${t.map( theme => theme.backgroundSecondary )};
+                        color: ${t.map( theme => theme.text )};
+
                   }
             </style>
             <div class="container" idx=${key} rest=${ref}>

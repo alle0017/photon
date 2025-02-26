@@ -3,14 +3,6 @@ import Sui, { createTheme, setThemeAsDefault, useTheme } from "./components/inde
 /**@import {Signal} from "./core" */
 
 function App(){
-      createTheme('dark', {
-            background: '#444',
-            backgroundSecondary: '#222',
-            text: '#fff',
-            textLight: '#aaa',
-            error: '#ed4337',
-      });
-      setThemeAsDefault('dark');
       const themes = useTheme();
 
       return html`
@@ -27,7 +19,20 @@ function App(){
             <g-switch circleColor="text"/>
             <g-accordion>
                   <g-accordion-item 
-                        title="100,000 views - how much is it? ">
+                        title="100,000 views - how much is it? "
+                        dividerColor="text"
+                        iconColor="text">
+                        <div style="margin-bottom: 100px;">
+                              The number of views equals the number of times the app loads on your website. 
+                              As usual, 100,000 views approximately equals 100,000 of visits to your site per month. 
+                              But it still depends on each specific case and the numbers may differ.
+                              More details about views are here.
+                        </div>
+                  </g-accordion-item>
+                  <g-accordion-item 
+                        title="100,000 views - how much is it? "
+                        dividerColor="text"
+                        iconColor="text">
                         The number of views equals the number of times the app loads on your website. 
                         As usual, 100,000 views approximately equals 100,000 of visits to your site per month. 
                         But it still depends on each specific case and the numbers may differ.

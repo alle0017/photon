@@ -1,4 +1,4 @@
-import { html, css, Component, $ref, $signal } from "../core/index.js";
+import { html, css, Component, $ref, $signal, $watcher } from "../core/index.js";
 import { getComponentTheme, Key, useRestAttributes } from "./utils.js";
 /**
  * 
@@ -7,20 +7,22 @@ import { getComponentTheme, Key, useRestAttributes } from "./utils.js";
  * } & { [key: string]: string, }} param0 
  * @returns 
  */
-export default function AccordionItem({ title, collapsedIcon, expandedIcon, theme, ...other }){
-      expandedIcon = expandedIcon || '';
-      collapsedIcon = collapsedIcon || '⌄';
-
+export default function AccordionItem({ title, dividerColor, iconColor, collapsedIcon, expandedIcon, theme, ...other }){
+      collapsedIcon ||= '+';
+      expandedIcon ||= '-';
       const t = getComponentTheme( theme );
       const ref = useRestAttributes( other );
       const visible = $signal(false);
-      const icon = visible.map( v => v? expandedIcon: collapsedIcon );
       const key = Key.value;
+      const icon = visible.map(v => v? expandedIcon: collapsedIcon);
       const scoped = css`
             .container {
                   display: grid;
-                  width: inherit;
-                  height: 50px;
+                  width: 100%;
+                  height: fit-content;
+                  gap: 10px;
+                  padding: 10px;
+                  box-sizing: border-box;
             }
             .title {
                   font-size: 20px;
@@ -30,13 +32,14 @@ export default function AccordionItem({ title, collapsedIcon, expandedIcon, them
                   display: flex;
                   justify-content: space-around;
                   gap: 20px;
+                  width: 100%;
             }
             .content {
-                  height: 0px;
                   overflow: hidden;
+                  transition: .7s;
             }
             .icon {
-                  font-size: 32px;
+                  font-size: 48px;
             }
             .icon:hover {
                   filter: brightness(70%);
@@ -49,26 +52,26 @@ export default function AccordionItem({ title, collapsedIcon, expandedIcon, them
 
       return html`
             <style scoped=${scoped}>
-                  .container[idx="${key}"] {
-                        
+                  .content[idx="${key}"] {
+                        color: ${t.map( theme => theme.textLight )};
                   }
                   .icon[idx="${key}"] {
-                        color: ${t.map( theme => theme.primary )}
+                        color: ${t.map( theme => theme[iconColor || 'primary'] || theme.primary )};
+                  }
+                  .container[idx="${key}"] {
+                        border-bottom: 2px solid ${t.map( theme => theme[dividerColor || 'primary'] || theme.primary )};
                   }
             </style>
-            <div class="container" idx=${key} rest=${ref}>
-                  <div class="title">
+            <div class="container" idx="${key}" rest=${ref}>
+                  <div class="title" @click=${() => visible.value = !visible.value}>
                         <div style="width: 95%;">
                               ${title}
                         </div>
-                        <div class="icon" idx=${key} @click=${() => visible.value = !visible.value}>
-                              ${ html`
-                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                                    <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708"/>
-                              </svg>`}
+                        <div class="icon" idx=${key}>
+                              ${icon}
                         </div>
                   </div>
-                  <div class="content" style=${visible.map( value => value ? 'height: fit-content;': 'height: 0px;')}>
+                  <div class="content" idx=${key} style=${visible.map( value => value ? 'max-height: 500px;': 'max-height: 0px;')}>
                         <Children/>
                   </div>
             </div>
