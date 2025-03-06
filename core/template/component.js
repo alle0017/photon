@@ -218,65 +218,33 @@ export default class Component {
             }
 
             const component = Component.__register.get( leaf.tagName )( { ...props, __children: leaf.children } );
-            let root;
+            const root = document.createTextNode('');
             /**
              * @type {RenderingResult}
              */
-            let res;
+            const res = dom.createComponent( 
+                  component, 
+                  leaf, 
+                  numOfArgs < leaf.numOfInterpolations? 
+                        args.slice( idx + numOfArgs, idx + leaf.numOfInterpolations ):
+                        [], 
+                  refToArgs, 
+                  refIdx + numOfArgs - 1
+            );
 
-            if( component instanceof Component ){
-                  res = dom.createComponent( 
-                        component, 
-                        leaf, 
-                        numOfArgs < leaf.numOfInterpolations? 
-                              args.slice( idx + numOfArgs, idx + leaf.numOfInterpolations ):
-                              [], 
-                        refToArgs, 
-                        refIdx + numOfArgs 
-                  );
-                  root = document.createTextNode('');
+            res.tag[0].before( root );
 
-                  res.tag[0].before( root );
+            res.usedArgs = 
+                  res.usedArgs > numOfArgs? 
+                        res.usedArgs - numOfArgs:
+                        numOfArgs;
+                        
+            res.skipAttributes = true;
 
-                  res.usedArgs = 
-                        res.usedArgs > numOfArgs? 
-                              res.usedArgs - numOfArgs:
-                              numOfArgs;
-                              
-                  res.skipAttributes = true;
-            }else if( isComponentList( component ) ){
-
-                  res = dom.createComponentList( 
-                        component, 
-                        leaf, 
-                        numOfArgs < leaf.numOfInterpolations? 
-                              args.slice( idx + numOfArgs, idx + leaf.numOfInterpolations ):
-                              [], 
-                        refToArgs, 
-                        refIdx + numOfArgs 
-                  );
-                  root = document.createTextNode('');
-
-                  res.tag[0].before( root );
-
-                  res.usedArgs = 
-                        res.usedArgs > numOfArgs? 
-                              res.usedArgs - numOfArgs:
-                              numOfArgs;
-                  res.skipAttributes = true;
-            }else{
-
-                  res = {
-                        ...dom.createElement( leaf.tagName, leaf ),
-                        needAttributes: false,
-                        usedArgs: numOfArgs,
-                        // skip the "skipping-phase"
-                        skipAttributes: true,
-                  };
-                  root = res.tag[0];
+            if( !(component instanceof Component) ){
+                  throw new Error('registered component must return a component')
             }
 
-            //res.usedArgs += numOfArgs;    
 
             if( !refToArgs[ refIdx ] ){
                   refToArgs[ refIdx ] = {
@@ -290,6 +258,7 @@ export default class Component {
                         },
                         boundKeys,
                   };
+
             }else{
                   refToArgs[ refIdx ].root.push(root);
             }
@@ -719,9 +688,9 @@ export default class Component {
 
             const toUpdate = [];
 
+
             for( let i = 0; i < args.length; i++ ){
-                  const self = this.#args[i];
-                  const other = args[i];
+
 
 
                   if( this.#refToArgs[i] && this.#refToArgs[i].isRegisteredComponent ){
@@ -736,16 +705,27 @@ export default class Component {
 
 
                         if( self.isEqualTo( other ) ){
-                              self.update( this.#refToArgs[i].props );
+                              self.update( ...other.#args );
                         }else{
                               self.dispose();
                               this.#refToArgs[i].component.instance = other;
                         }
-                        i += this.#refToArgs[i].boundKeys.length;
+
+                        i += this.#refToArgs[i].boundKeys.length - 1;
+                        continue;
                   }
+
+                  const self = this.#args[i];
+                  const other = args[i];
+
+                  if( !this.#refToArgs[i] ){
+                        continue;
+                  }
+
 
                   if( areEquals( self, other ) ){
                         const roots = this.#refToArgs[i].root;
+
                         if( this.#refToArgs[i].isAttributeValue ){
                               
                               let value = self;
@@ -890,9 +870,7 @@ export default class Component {
       #updateAttributes( toUpdate ){
             const components = [];
 
-
             for( let j = 0; j < toUpdate.length; j++ ){
-
 
                   const i = toUpdate[j];
                   const self = this.#args[i];
@@ -928,7 +906,6 @@ export default class Component {
                         //@ts-ignore
                         self.element = roots.at(-1);
                   }else if(  this.#refToArgs[i].isTextNode ){
-
                         for( let i = 0; i < roots.length; i++ ){
                               roots[i].textContent = /**@type {string}*/(value)
                         }
@@ -972,7 +949,7 @@ export default class Component {
                               ...self.render({
                                     tree: desc.children.children,
                                     args: this.#args.slice( idx + 1, desc.children.numOfInterpolations + 1 ),
-                                    refToArgs: [],
+                                    refToArgs: this.#refToArgs,
                                     idx: 0,
                               })
                         );
@@ -983,7 +960,7 @@ export default class Component {
                               tree.push(...self[i].render({
                                     tree: desc.children.children,
                                     args: this.#args.slice( idx + 1, desc.children.numOfInterpolations + 1 ),
-                                    refToArgs: [],
+                                    refToArgs: this.#refToArgs,
                                     idx: 0,
                               }));
                         }

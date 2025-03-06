@@ -56,6 +56,7 @@ export const setThemeAsDefault = name => {
             throw new Error('no theme name found with name ' + name );
       }
       document.body.style.backgroundColor = theme.background;
+      document.body.style.color = theme.text;
       themes.default.value = theme;
 }
 
@@ -100,7 +101,6 @@ export const useRestAttributes = other => {
                               e.setAttribute( k, v );
                         }else{
                               e.classList.add(v)
-                              console.log( v )
                         }
                   }
             });

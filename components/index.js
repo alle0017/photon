@@ -11,6 +11,9 @@ import Carousel from "./carousel.js";
 import { Swipe } from "./swipe.js";
 import Accordion from "./accordion.js";
 import AccordionItem from "./accordionItem.js";
+import Breadcrumb from "./breadcrumb.js";
+import Datepicker from "./datepicker.js";
+import Modal from "./modal.js";
 /**@import {GApp} from "../core" */
 
 /**
@@ -107,6 +110,9 @@ export default function Sui( app ){
       .registerComponent(Swipe,'g-swipe')
       .registerComponent(Accordion,'g-accordion')
       .registerComponent(AccordionItem,'g-accordion-item')
+      .registerComponent(Breadcrumb,'g-breadcrumb')
+      .registerComponent(Datepicker, 'g-datepicker')
+      .registerComponent(Modal, 'g-modal')
 }
 
 /**

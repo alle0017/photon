@@ -16,7 +16,7 @@ import { html, css, Component, $ref } from "../core/index.js";
 * } & { [key: string]: string }} param0 
 * @returns 
 */
-export default function Button({ theme, mode, __children, onClick, text, ...other }){
+export default function Button({ theme, mode, __children, onClick, text, background, ...other }){
       const t = getComponentTheme( theme );
       const key = Key.value;
       const ref = $ref();
@@ -58,7 +58,7 @@ export default function Button({ theme, mode, __children, onClick, text, ...othe
       return html`
             <style>
                   .btn[idx="${key}"] {
-                        background-color: ${t.map( theme => mode == 'outline'? theme.background: theme.primary)};
+                        background-color: ${t.map( theme => mode == 'outline'? theme.background: (theme[background || 'primary'] || theme.primary))};
                         color: ${t.map( theme => mode == 'outline'? theme.primary: theme.background )};
                         border: ${t.map( theme => mode == 'outline'? `3px ${theme.primary} solid`: 'none' )};
                   }

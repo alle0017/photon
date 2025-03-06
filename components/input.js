@@ -23,7 +23,7 @@ import { html, css, $ref } from "../core/index.js";
 * } & { [key: string]: string}} param0 
 * @returns 
 */
-export default function Input({ theme, onInput, value, placeholder, mode, label, rules, description, disabled, bind, bindKey, ...other }){
+export default function Input({ theme, onInput, value, placeholder, background, mode, label, rules, description, disabled, bind, bindKey, ...other }){
       const t = getComponentTheme( theme );
       const key = Key.value;
       const ref = $ref();
@@ -115,7 +115,7 @@ export default function Input({ theme, onInput, value, placeholder, mode, label,
       return html`
             <style>
                   .input[idx="${key}"] {
-                        background-color: ${t.map( theme => theme.background )};
+                        background-color: ${t.map( theme => theme[background || 'background'] || theme.background )};
                         color: ${t.map( theme => theme.text )};
                         border: none;
                   }

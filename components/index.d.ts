@@ -134,6 +134,13 @@ export type Theme = {
  *    expandedIcon?: string,
  * }
  * ```
+ * - `g-breadcrumb`: 
+ * > it has one slot for any number of `g-item`.
+ * ```javascript
+ * { 
+ *    dividerIcon?: string,
+ * }
+ * ```
  * - `g-swipe`
  * ```javascript
  * { 

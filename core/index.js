@@ -145,7 +145,8 @@ export const $ref = () => {
              */
             set element( component ){
                   element = component;
-                  _load.forEach( f => f(element) );
+                  if( component )
+                        _load.forEach( f => f(element) );
             },
             __isRef__: true,
             /**

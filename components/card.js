@@ -9,7 +9,7 @@ import { getComponentTheme, Key, useRestAttributes } from "./utils.js";
  * } & { [key: string]: string, }} param0 
  * @returns 
  */
-export default function Card({ title, subtitle, theme, ...other }){
+export default function Card({ title, subtitle, text, background, theme, ...other }){
       const t = getComponentTheme( theme );
       const ref = useRestAttributes( other );
       const key = Key.value;
@@ -38,13 +38,10 @@ export default function Card({ title, subtitle, theme, ...other }){
       return html`
             <style>
                   .card[idx="${key}"] {
-                        background-color: ${t.map( theme => theme.backgroundSecondary )};
+                        background-color: ${t.map( theme => theme[background || 'backgroundSecondary'] || theme.backgroundSecondary )};
                   }
                   .subtitle[idx="${key}"] {
                         color: ${t.map( theme => theme.textLight )};
-                  }
-                  .title[idx="${key}"] {
-                        color: ${t.map( theme => theme.text )};
                   }
             </style>
             <div class="card" scoped=${scoped} idx=${key} ref=${ref}>
