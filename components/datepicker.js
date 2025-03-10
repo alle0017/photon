@@ -67,7 +67,7 @@ const dateKey = d => `${d.getMonth()}x${d.getFullYear()}`
  * } & { [key: string]: string, }} param0 
  * @returns 
  */
-export default function Datepicker({ filterFunction, theme, mode, onMultipleSelection, onSingleSelection, ...other }){
+export default function Datepicker({ filterFunction, theme, mode, onMultipleSelection, onSingleSelection, buttonColor, backgroundColor, activeColor, ...other }){
       const t = getComponentTheme( theme );
       const ref = useRestAttributes( other );
       const key = Key.value;
@@ -82,6 +82,7 @@ export default function Datepicker({ filterFunction, theme, mode, onMultipleSele
                   display: inline-grid;
                   gap: 20px;
                   align-items: center;
+                  padding: 10px;
             }
             .title {
                   display: flex;
@@ -213,6 +214,10 @@ export default function Datepicker({ filterFunction, theme, mode, onMultipleSele
 
       return html`
             <style scoped=${scoped}>
+                  .wrapper[idx="${key}"] {
+                        background-color: ${t.map( theme => theme[backgroundColor || 'backgroundSecondary'] || theme.backgroundSecondary )};
+
+                  }
                   .inactive[idx="${key}"],.active[idx="${key}"] {
                         border-radius: 50%;
                         width: 30px;
@@ -229,24 +234,24 @@ export default function Datepicker({ filterFunction, theme, mode, onMultipleSele
                         cursor: pointer;
                   }
                   .active[idx="${key}"]:hover {
-                        background-color: ${t.map( theme => theme.backgroundSecondary )};
+                        background-color: ${t.map( theme => theme[backgroundColor || 'backgroundSecondary'] || theme.backgroundSecondary )};
                   }
                   .inactive[idx="${key}"] {
                         color: ${t.map( theme => theme.textLight )};
                   }
                   .selected[idx="${key}"] {
-                        background-color: ${t.map( theme => theme.primary )};
+                        background-color: ${t.map( theme => theme[activeColor || 'primary'] || theme.primary )};
                   }
                   .selected[idx="${key}"]:hover {
-                        background-color: ${t.map( theme => theme.primary )};
+                        background-color: ${t.map( theme => theme[activeColor || 'primary'] || theme.primary )};
                         filter: brightness(70%);
                   }
 
                   button[idx="${key}"] {
-                        background-color: ${t.map( theme => theme.background )};
+                        background-color: ${t.map( theme => theme[buttonColor || 'background'] || theme.background )};
                   }
             </style>
-            <div class="wrapper">
+            <div class="wrapper" idx=${key}>
                   <div class="title">
                         <button idx="${key}" ontouchstart="" @click=${() => go(-1)}>‹</button>
                         ${date.map(d => getMonthName(d))} 

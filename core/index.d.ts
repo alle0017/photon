@@ -6,6 +6,7 @@ interface Subscriber {
 
 type Ref<T extends HTMLElement> = {
       onLoad( f: (e: T) => void ): void,
+      onUnload( f: () => void ): void,
       element: T,
       __isRef__: boolean,
 }

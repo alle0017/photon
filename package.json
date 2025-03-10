@@ -1,6 +1,6 @@
 {
   "name": "gloomjs",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "lightweight js framework",
   "main": "./core/index.js",
   "scripts": {

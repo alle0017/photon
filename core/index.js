@@ -134,6 +134,10 @@ export const $ref = () => {
        * @type {Set<( el: T )=>void>}
        */
       const _load = new Set();
+      /**
+       * @type {Set<()=>void>}
+       */
+      const _unload = new Set();
       let element;
 
       return {
@@ -147,6 +151,8 @@ export const $ref = () => {
                   element = component;
                   if( component )
                         _load.forEach( f => f(element) );
+                  else
+                        _unload.forEach( f => f() );
             },
             __isRef__: true,
             /**
@@ -154,6 +160,12 @@ export const $ref = () => {
              */
             onLoad( callback ){
                   _load.add( callback );
+            },
+            /**
+             * @param {()=>void} callback 
+             */
+            onUnload( callback ){
+                  _unload.add( callback );
             }
       };
 } 
