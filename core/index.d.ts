@@ -11,7 +11,13 @@ export type Signal<T> = {
      * The current value of the signal.
      */
     value: T;
-
+    /**
+     * discouraged way of setting
+     * signal value. bypass type checking,
+     * useful for objects that keep their reference
+     * @param value 
+     */
+    set(value: T): void,
     /**
      * Subscribes a callback to be executed whenever the signal's value changes.
      * @param {() => void} callback - The callback to execute on value change.

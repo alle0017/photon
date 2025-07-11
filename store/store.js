@@ -1,5 +1,6 @@
-import { $signal, Signal, } from "./core/index.js";
-import Effect from "./core/Signals/Effect.js";
+import { $signal, } from "../core/index.js";
+import Effect from "../core/Signals/Effect.js";
+/**@import {Signal,} from "../core/index.js" */
 /**
  * @template {{}} T
  * @typedef {<K>(accessor: (t: T) => K) => Effect<K>} Accessor
