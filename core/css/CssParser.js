@@ -1,3 +1,5 @@
+/**@import {ScopedCss} from "./ScopedCss" */
+
 class CssParser {
       static #keyId = Math.trunc( Math.random() * 5760 + Math.random() * 1254 + 4578 );
       /**
@@ -190,8 +192,8 @@ class CssParser {
  * ```
  * @param {TemplateStringsArray} strings 
  * @param  {...unknown} args 
- */
-export const css = ( strings, ...args ) => {
+ */ 
+const css = ( strings, ...args ) => {
       let res = strings[0];
 
       for( let i = 0; i < args.length; i++ ) {
@@ -200,3 +202,13 @@ export const css = ( strings, ...args ) => {
 
       return new CssParser( res ).scope();
 }
+
+/**
+ * @param {unknown} obj
+ * @returns {obj is ScopedCss}
+ */
+export const isCssKey = obj => {
+      return Boolean(obj && typeof obj == 'object' && '__css__Key' in obj && obj.__css__Key && typeof obj.__css__Key == 'string');
+}
+
+export default css;
