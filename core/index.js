@@ -1,26 +1,68 @@
-import Effect from "./reactivity/effect.js";
-import Signal from "./reactivity/signal.js";
-import Component from "./template/component.js";
-export { css } from "./css/index.js";
-export { Signal, Component, Effect };
+import Parser from "./Parser/Parser.js"
+import Signal from "./Signals/Signal.js";
+import DOMRenderer from "./Parser/View/DOMRenderer.js";
+import Register from "./Parser/Register.js";
+import VNode from "./Parser/Nodes/VNode.js";
+import LinearDiffer from "./Parser/Diff/LinearDiffer.js";
+import Effect from "./Signals/Effect.js";
+import Ref from "./Signals/Reference.js";
+import css from "./css/CssParser.js";
+import VNodeBuilder from "./Parser/Nodes/VNodeBuilder.js";
+import Out from "./Util/Logger.js";
+import Exception from "./Signals/Exception.js";
+
+export {css,Signal,VNode, Ref};
+
 /**
  * 
  * @param {TemplateStringsArray} strings 
  * @param  {...unknown} args 
+ * @returns {VNode<HTMLElement>[]}
  */
 export const html = ( strings, ...args ) => {
-      return new Component( strings, ...args );
+      const tree = new Parser(GApp.builder).parse( strings, ...args );
+      Exception.notify();
+      return tree;
 }
+ 
+export const $error = Exception;
 
 /**
- * 
- * @param {Component} component 
- * @param {HTMLElement} root
+ * @template T
+ * @param {T} value 
+ * @returns {Signal<T>}
  */
-export const createRoot = ( component, root )=>{
-      root.append( ...component.render({ tree: [], args: [], refToArgs: [], idx: 0 }) );
-}
+export const $signal = value => new Signal(value);
+/**
+ * @template T
+ * @param {(() => T )| ((oldValue: T) => T)} callback 
+ * @param  {...Signal<unknown>} signals 
+ */
+export const $effect = (callback,...signals) => new Effect(callback,...signals);
+/**
+ * connect the callback to the specified signal, producing a non-computed side effect.
+ * the returned value is the unsubscribe function, that can be used to detach the listener
+ * from the subscription list. 
+ * * @example 
+ * ```js
+ * const signal = $signal(0);
+ * const unsubscribe = $watcher(() => console.log(signal.value), signal)
+ * 
+ * signal.value += 2; // log: 2
+ * signal.value += 2; // log: 4
+ * unsubscribe();
+ * signal.value += 2; // log: nothing
+ * ```
+ * @param {()=>void} callback 
+ * @param {Signal<unknown>} signal 
+ */
+export const $watcher = ( callback, signal ) => signal.subscribe(callback);
 
+/**
+ * @template {HTMLElement} T
+ * @returns {Ref<T>}
+ */
+export const $ref = () => new Ref();
 
 /**
  * create a context that can be retrieved by calling 
@@ -44,217 +86,82 @@ export const createContext = ctx => {
       }
 }
 
-
-/**
- * create a state variable. each time variable.value changes, 
- * it triggers the reload of each component that uses it.
- * `Signal` is the most important class of the frameworks.
- * it enables fine-grained reactivity and dependency tracking.
- * > important note: at current state, `Signal` are shallow, 
- * > so if you change an internal property or you call a modifier
- * > method the ui will not be updated.
- *  @example 
- * ```js
- * const signal = $signal(0);
- * 
- * html`
- *    ${signal}
- *    <button ＠click=${() => signal.value++} > ADD </button>
- * `
- * 
- * ```
- * @template T
- * @param {T} value 
- */
-export const $signal = value => new Signal( value );
-
-/**
- * creates an `Effect`. Effects are computed properties, that are 
- * calculated each time one of the the dependencies changes. Effect are
- * useful also for reactive conditional rendering.
- * ### all the properties of the `Effect` object should not be used directly.
- * @example 
- * ```js
- * const signal = $signal(0);
- * const effect = $effect(() => signal.value + 10, signal)
- * 
- * 
- * html`
- *    <div>${signal} + 10 = ${effect}</div>
- * `
- * 
- * ```
- * @template T
- * @param {() => T} value 
- * @param {Signal<unknown>[]} states
- */
-export const $effect = ( value, ...states ) => new Effect( value, ...states );
-
-/**
- * connect the callback to the specified signal, producing a non-computed side effect.
- * the returned value is the unsubscribe function, that can be used to detach the listener
- * from the subscription list. 
- * * @example 
- * ```js
- * const signal = $signal(0);
- * const unsubscribe = $watcher(() => console.log(signal.value), signal)
- * 
- * signal.value += 2; // log: 2
- * signal.value += 2; // log: 4
- * unsubscribe();
- * signal.value += 2; // log: nothing
- * ```
- * @param {()=>void} callback 
- * @param {Signal<unknown>} signal 
- */
-export const $watcher = ( callback, signal ) => signal.subscribeEffect( { update: callback } );
-/**
- * provides an hook to an element of the DOM.\
- * note that you don't need to pass it as value of the attribute 'ref', any attribute is valid
- * @example
- * ```javascript
- * function Input(){
- *    const input = $ref();
- *    
- *    return html`
- *          <input 
- *           type="text"
- *           value=""
- *           ref=${input}
- *           ＠change="${() => console.log(input.element.value)}"
- *          />
- *    `
- * }
- * ```
- * @template {HTMLElement} T - the type of the element you wish to anchor with the `$ref`
- * @returns {Ref<T>}
- */
-export const $ref = () => {
-      /**
-       * @type {Set<( el: T )=>void>}
-       */
-      const _load = new Set();
-      /**
-       * @type {Set<()=>void>}
-       */
-      const _unload = new Set();
-      let element;
-
-      return {
-            get element(){
-                  return element;
-            },
-            /**
-             * @param {T} component
-             */
-            set element( component ){
-                  element = component;
-                  if( component )
-                        _load.forEach( f => f(element) );
-                  else
-                        _unload.forEach( f => f() );
-            },
-            __isRef__: true,
-            /**
-             * @param {(e: T)=>void} callback 
-             */
-            onLoad( callback ){
-                  _load.add( callback );
-            },
-            /**
-             * @param {()=>void} callback 
-             */
-            onUnload( callback ){
-                  _unload.add( callback );
-            }
-      };
-} 
-
-/**
- * create a function that will return a component with the possibility
- * to associate lifecycle hooks. This function enables composition API
- * and more fine-grained lifecycle handling
- * @example
- * ```javascript
- * const Name = useLifecycle(({ onMount }) => {
- *      onMount(() => {
- *                console.log('executed with the other')
- *      })
- *      return ({ name }) =>{
- *          onMount(() => {
- *                console.log(name)
- *          });
- *           return html`<div>${name}</div>`
- *      }
- * })
- * ```
- * @template T
- * @param {(on: LifecycleHook) => ((args: T) => Component)} factory 
- */
-export const useLifecycle = factory => {
-      /**
-       * @type {Array<()=>void>}
-       */
-      const onMount = [];
-      /**
-       * @type {Array<()=>void>}
-       */
-      const onDispose = [];
-      /**
-       * @type {Array<(e: Error)=>void>}
-       */
-      const onError = [];
-
-      const componentFactory = factory({ 
-            onMount: c => onMount.push(c),
-            onDispose: c => onDispose.push(c),
-            onError: c => onError.push(c),
-      });
-
-
-      /**
-       * @param {T} args
-       */
-      return args => {
-            const component = componentFactory( args );
-            component.__dispose = onDispose;
-            component.__mount = onMount;
-            component.__error = onError;
-            return component
-      }
-}
 export const GApp = {
       /**
-       * 
+       * @type {VNodeBuilder<HTMLElement>}
+       */
+      builder: new VNodeBuilder( new DOMRenderer(), new Register(), LinearDiffer ),
+
+      /**
+       * method used to register a custom component
+       * @param {(args: {}) => VNode<HTMLElement>[]} renderer 
+       * @param {string} tag 
+       * @returns {typeof GApp}
+       */
+      registerComponent(renderer,tag = renderer.name){
+            this.builder.register(renderer,tag)
+            return this;
+      },
+
+
+      /**
+       * method used to register a custom component
+       * @param {() => VNode<HTMLElement>[]} component
+       * @param {HTMLElement} [root=document.body] 
+       * @returns {typeof GApp}
+       */
+      createRoot(component, root = document.body){
+            
+            try {
+                  const tree = component();
+                  tree.forEach(node => root.append(node.render()));
+            } catch (e) {
+                  $error.throw(e);
+            }
+
+            return this;
+      },
+
+      /**
+       * function that can be used to use a plugin. A plugin is 
+       * some code that is initialized in the pluginStarter and modifies
+       * the behavior of how the framework itself works
        * @param {(app: typeof GApp) => void} pluginStarter 
        */
       use( pluginStarter ){
             pluginStarter( this );
             return this;
       },
-      /**
-       * 
-       * @param {(args: Record<string,unknown>) => Component} component 
-       * @param {string} name 
-       */
-      registerComponent( component, name ) {
-            if( !component.name && !name ){
-                  throw new Error('component can be registered because is anonymous. Probably is the result of an high-order function call. In this case, explicitly pass a name as argument of the "registerComponent"')
-            }
 
-            Component.__register.set(
-                  name? name : component.name,
-                  component
-            );
-            return this;
-      },
       /**
        * 
-       * @param {Component} component 
-       * @param {HTMLElement} root
+       * @param {boolean} flag 
+       * @returns {typeof GApp}
        */
-      createRoot( component, root ){
-            root.append( ...component.render({ tree: [], args: [], refToArgs: [], idx: 0 }) );
+      setDebug( flag ){
+            Out.debug = flag;
             return this;
       }
+}
+
+/**
+ * create a component that can be used to scope css using `Shadow DOM API`.
+ * You need to pass the mode of the root. if missing, the component will throw error
+ * @param {{
+ *    children: VNode<HTMLElement>[],
+ *    mode: 'open' | 'closed'
+ * }} param0 
+ */
+export function Shadow({ children, mode }) {
+      const root = $ref();
+
+      if (!mode) {
+            throw new Error("[Shadow] missing attribute on <Shadow>. Attribute 'mode' is mandatory and must be settled to 'open' or 'closed'");
+      }
+      root.onLoad(el => {
+            el.attachShadow({mode});
+            //@ts-ignore
+            GApp.createRoot(() => children, el.shadowRoot);
+      });
+      return html`<span ref=${root}></span>`
 }
