@@ -27,7 +27,7 @@ Photon embraces direct manipulation of DOM via signals, scoped styles, and decla
 Photon is currently in development. To use Photon in your project:
 
 ```bash
-npm install photon
+npm install @alle0017!/photonjs
 ```
 
 ---
@@ -170,7 +170,7 @@ const useTheme = createContext({ mode: 'dark' });
 GApp.registerComponent(() => {
   const theme = useTheme();
   return html`<div>Theme: ${theme.mode}</div>`;
-});
+}, "ContextUser");
 ```
 
 ---

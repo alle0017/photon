@@ -1,8 +1,11 @@
 {
-  "name": "gloomjs",
+  "name": "@alle0017!/photonjs",
   "version": "1.0.9",
   "description": "lightweight js framework",
   "main": "./core/index.js",
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -17,5 +20,7 @@
   ],
   "author": "alle0017!",
   "license": "MIT",
-  "repository": {"url": "https://github.com/alle0017/gloom"}
+  "repository": {
+    "url": "https://github.com/alle0017/photon"
+  }
 }
