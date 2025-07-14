@@ -23,11 +23,12 @@ export default class DOMRenderer {
 
             const clone = node.cloneNode();
 
-            if (clone instanceof Element) {
-                  const attrs = [...clone.attributes];
+            if (clone.nodeType == Node.ELEMENT_NODE) {
+                  const el = /**@type {HTMLElement} */(clone);
+                  const attrs = [...el.attributes];
                   
                   for (let i = 0; i < attrs.length; i++) {
-                        clone.removeAttribute(attrs[i].name);
+                        el.removeAttribute(attrs[i].name);
                   }
             }
 

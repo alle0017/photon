@@ -207,7 +207,7 @@ export default class VNodeBuilder {
       create(tag, props, children,scope){
             if( tag instanceof Reactive ){
 
-                  if ( tag.value instanceof Array ) {
+                  if (Array.isArray(tag.value)) {
                         const {sub,build} = this.#handleReactiveVNodeList(/**@type {Reactive<VNode[]>}*/(tag));
 
                         scope.push(sub);
@@ -226,7 +226,7 @@ export default class VNodeBuilder {
                   }
             }
 
-            if( tag instanceof Array ) {
+            if (Array.isArray(tag)) {
                   return {
                         subs: scope,
                         tree: tag,

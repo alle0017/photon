@@ -14,13 +14,11 @@ export default class Reactive {
       static get scheduler() {
             return this.#scheduler;
       }
-
       /**
        * @type {Set<(arg: T) => void>}
        * @readonly
        */
       #subscribers = new Set();
-
       /**
        * @abstract
        * @type {T}

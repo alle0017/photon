@@ -176,21 +176,21 @@ export default class VNode {
                   JSON.stringify(a) === JSON.stringify(b)
             );
 
-            if( !el )
+            if (!el)
                   return false;
-            if( typeof el !== 'object' )
+            if (typeof el !== 'object')
                   return false;
-            if( !(el instanceof VNode) )
+            if (!(el instanceof VNode))
                   return false;
-            if( el.#tag !== this.#tag )
+            if (el.#tag !== this.#tag)
                   return false;
-            if( el.#props.size !== this.#props.size )
+            if (el.#props.size !== this.#props.size)
                   return false;
             if (el.#children.length !== this.#children.length)
                   return false;
 
-            for( const key of this.#props.keys() ){
-                  if( !el.#props.has(key) ) {
+            for (const key of this.#props.keys()){
+                  if (!el.#props.has(key)) {
                         return false;
                   } 
 
@@ -230,7 +230,7 @@ export default class VNode {
 
             this.#instance.setCssKeys( ...this.#cssKeys );
 
-            for ( const child of this.#children ) {
+            for (const child of this.#children) {
                   this.#cssKeys.forEach(key => child.#cssKeys.add(key));
                   child.render();
                   this.#instance.appendChild(child.#instance);

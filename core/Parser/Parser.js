@@ -105,7 +105,7 @@ export default class Parser {
             if( tagName == Parser.#pointerToReactive ){
                   const arg = args.shift();
 
-                  if( ( !(arg instanceof Reactive) || !(typeof arg.value == 'string') ) && !(typeof arg == 'string') ){
+                  if ((!(arg instanceof Reactive) || typeof arg.value != 'string') && typeof arg != 'string') {
                         throw new TypeError( 'The tag name must be a string or a Signal<string> ' + arg );
                   }
 

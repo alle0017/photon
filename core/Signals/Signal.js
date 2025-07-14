@@ -50,12 +50,13 @@ export default class Signal extends Reactive {
        * @param {T extends Array<infer K> ? (v: K, index: number) => V : (v: T) => V } callback 
        */
       map(callback) {
-            if( this.#value instanceof Array ){
+            if (Array.isArray(this.#value)) {
                   return new Effect(
                         oldValue => {
-                              if( !(this.#value instanceof Array) )
+                              if (!Array.isArray(this.#value)) {
                                     return oldValue;
-                              return this.#value.flatMap( (v,i) => callback(v,i) );
+                              }
+                              return this.#value.flatMap((v,i) => callback(v,i));
                         },
                         this
                   );
