@@ -27,6 +27,24 @@ export type Signal<T> = {
 };
 
 /**
+ * Represents a reactive signal that tracks a value and notifies subscribers when it changes.
+ * Signals are the core of the framework's reactivity system.
+ * @template T - The type of the value being tracked.
+ */
+export type Effect<T> = {
+    /**
+     * The current value of the signal.
+     */
+    value: T;
+    /**
+     * Subscribes a callback to be executed whenever the signal's value changes.
+     * @param {() => void} callback - The callback to execute on value change.
+     * @returns {() => void} - A function to unsubscribe the callback.
+     */
+    subscribe(callback: () => void): () => void;
+};
+
+/**
  * Represents a reference to an HTML element, allowing lifecycle hooks and direct DOM manipulation.
  * @template T - The type of the HTML element.
  */
@@ -184,7 +202,7 @@ export function createContext<T>(ctx: T): () => T;
 /**
  * Represents the main application object, providing methods for component registration, root creation, and plugin usage.
  */
-export const GApp: {
+export declare const GApp: {
     /**
      * The builder responsible for managing virtual DOM nodes and rendering.
      */

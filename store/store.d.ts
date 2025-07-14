@@ -17,5 +17,5 @@ export type State<T extends {}> = {
     mutator: Mutator<T>;
     derive: Deriver<T>;
 };
-import Effect from "../docs/core/Signals/Effect.js";
+import {Effect} from "../core/index.js";
 //# sourceMappingURL=store.d.ts.map
