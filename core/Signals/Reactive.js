@@ -1,3 +1,4 @@
+import List from "../Util/List.js";
 import Out from "../Util/Logger.js";
 import Exception from "./Exception.js";
 import Scheduler from "./Scheduler.js";
@@ -15,10 +16,10 @@ export default class Reactive {
             return this.#scheduler;
       }
       /**
-       * @type {Set<(arg: T) => void>}
+       * @type {List<(arg: T) => void>}
        * @readonly
        */
-      #subscribers = new Set();
+      #subscribers = new List();
       /**
        * @abstract
        * @type {T}
@@ -33,15 +34,19 @@ export default class Reactive {
        * @returns {Unsubscriber}
        */
       subscribe( callback ){
-            if( typeof callback !== 'function' ){
+            if (typeof callback !== 'function') {
                   throw new TypeError("callback must be a function");
             }
 
-            this.#subscribers.add(callback);
+            let node = this.#subscribers.push(callback);
 
             return () => {
+                  if (!node) {
+                        return;
+                  }
                   Out.log("[subscription] subscription deleted");
-                  this.#subscribers.delete(callback);
+                  this.#subscribers.remove(node);
+                  node = null;
             };
       }
 
@@ -56,16 +61,21 @@ export default class Reactive {
                   throw new TypeError("callback must be a function");
             }
 
-            this.#subscribers.add( value => {
-                  if( callback(value) ){
+            let node = this.#subscribers.push(value => {
+                  if (node && callback(value)) {
                         Out.log("[subscription] auto drop subscription detected");
-                        this.#subscribers.delete(callback);
+                        this.#subscribers.remove(node);
+                        node = null;
                   }
             });
 
             return () => {
+                  if (!node) {
+                        return;
+                  }
                   Out.log("[subscription] subscription deleted");
-                  this.#subscribers.delete(callback);
+                  this.#subscribers.remove(node);
+                  node = null;
             };
       }
 
@@ -74,7 +84,7 @@ export default class Reactive {
        * @param {T} value
        */
       call(value) {
-            for( const callback of this.#subscribers ){
+            for (const callback of this.#subscribers) {
                   callback(value);
             }
 

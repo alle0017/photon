@@ -1,18 +1,20 @@
 /**@import ConcreteNode from "../Parser/Nodes/ConcreteNode" */
 
+import List from "../Util/List";
+
 /**
  * @template {ConcreteNode} T
  */
 export default class Ref {
       /**
-       * @type {Set<(e: T) => void>}
+       * @type {List<(e: T) => void>}
        */
-      #load = new Set();
+      #load = new List();
 
       /**
-       * @type {Set<() => void>}
+       * @type {List<() => void>}
        */
-      #unload = new Set();
+      #unload = new List();
 
       /**
        * @type {T}
@@ -39,15 +41,29 @@ export default class Ref {
        * 
        * @param {(e: T) => void} hook 
        */
-      onLoad( hook ){
-            this.#load.add(hook);
+      onLoad(hook) {
+            let node = this.#load.push(hook);
+            return () => {
+                  if (!node) {
+                        return;
+                  }
+                  this.#load.remove(node);
+                  node = null;
+            }
       }
 
       /**
        * 
        * @param {() => void} hook 
        */
-      onUnload( hook ){
-            this.#unload.add(hook);
+      onUnload(hook) {
+            let node = this.#unload.push(hook);
+            return () => {
+                  if (!node) {
+                        return;
+                  }
+                  this.#unload.remove(node);
+                  node = null;
+            }
       }
 }

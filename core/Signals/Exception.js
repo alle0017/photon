@@ -1,9 +1,11 @@
+import List from "../Util/List";
+
 /**@import {Node} from "./Notifier" */
 export default class Exception {
       /**
-       * @type {Set<(e: Error) => void>}
+       * @type {List<(e: Error) => void>}
        */
-      static #subs = new Set();
+      static #subs = new List();
 
       /**
        * @type {Node<Error>} 
@@ -28,9 +30,15 @@ export default class Exception {
        * @param {(e: Error) => void} sub 
        */
       static catch(sub) {
-            this.#subs.add(sub);
+            let node = this.#subs.push(sub);
 
-            return () => this.#subs.delete(sub);
+            return () => {
+                  if (!node) {
+                        return;
+                  }
+                  this.#subs.remove(node);
+                  node = null;
+            };
       }
 
       /**

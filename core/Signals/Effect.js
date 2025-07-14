@@ -1,3 +1,4 @@
+import List from "../Util/List.js";
 import Reactive from "./Reactive.js";
 /**@import {Unsubscriber} from "./Notifier" */
 
@@ -10,9 +11,9 @@ export default class Effect extends Reactive {
        */
       #value;
       /**
-       * @type {Set<Unsubscriber>}
+       * @type {List<Unsubscriber>}
        */
-      #subs = new Set();
+      #subs = new List();
 
       get value() {
             return this.#value;
@@ -34,7 +35,7 @@ export default class Effect extends Reactive {
             this.#value = callback(undefined);
 
             for (const signal of signals) {
-                  this.#subs.add(
+                  this.#subs.push(
                         signal.subscribe( _ => {
                               const value = callback(this.#value);
 

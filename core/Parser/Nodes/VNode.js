@@ -9,6 +9,7 @@ import MetaTree from "./MetaTree.js";
 import Ref from "../../Signals/Reference.js";
 import { isCssKey } from "../../css/CssParser.js";
 import Exception from "../../Signals/Exception.js";
+import List from "../../Util/List.js";
 
 /**
  * @template {ConcreteNode} T
@@ -74,16 +75,16 @@ export default class VNode {
       #subs = [];
 
       /**
-       * @type {Set<()=>void>}
+       * @type {List<()=>void>}
        */
-      #leave = new Set();
+      #leave = new List();
 
       hasBeenRenderer = false;
 
       /**
-       * @type {Set<string>}
+       * @type {List<string>}
        */
-      #cssKeys = new Set();
+      #cssKeys = new List();
 
       get tag(){
             return this.#tag;
@@ -151,7 +152,7 @@ export default class VNode {
                         this.#setAttribute(root, key, v);
                   });
             } else if( isCssKey( value ) ) {
-                  this.#cssKeys.add(value.__css__Key);
+                  this.#cssKeys.push(value.__css__Key);
             } else {
                   root.setAttribute(key, /**@type {string}*/(value));
             }
@@ -231,7 +232,7 @@ export default class VNode {
             this.#instance.setCssKeys( ...this.#cssKeys );
 
             for (const child of this.#children) {
-                  this.#cssKeys.forEach(key => child.#cssKeys.add(key));
+                  this.#cssKeys.forEach(key => child.#cssKeys.push(key));
                   child.render();
                   this.#instance.appendChild(child.#instance);
             }
@@ -334,7 +335,7 @@ export default class VNode {
       /**
        * @param {() => void} callback 
        */
-      onLeave( callback ){
-            this.#leave.add(callback);
+      onLeave(callback){
+            this.#leave.push(callback);
       }
 }
