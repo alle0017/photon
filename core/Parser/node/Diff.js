@@ -1,7 +1,6 @@
+import List from "../../Util/List.js";
 /**@import ConcreteNode from "./ConcreteNode" */
 /**@import {VNode} from "./VNode" */
-
-import List from "../../Util/List";
 
 /**
  * @template {ConcreteNode} T
@@ -16,9 +15,6 @@ export const isNode = value => {
   return typeof v.tag === 'string' &&
     v.props instanceof Map &&
     v.subscriptions &&
-    Array.isArray(v.shadow) &&
-    (v.instance === undefined || typeof v.instance === 'object') &&
-    typeof v.rendered === 'boolean' &&
     Array.isArray(v.children) &&
     typeof v.render === 'function';
 }
@@ -156,7 +152,7 @@ const isEqual = (a,b) => {
  * @template {ConcreteNode} T
  * @param {VNode<T>[]} oldTree 
  * @param {VNode<T>[]} newTree 
- * @returns map that has as key the index in old tree that contains the difference,
+ * @returns {List<{ idx: number, node: VNode<T>}>} map that has as key the index in old tree that contains the difference,
  * and as value the new node that should be inserted in the old tree at the same index
  */
 export function getDifference(oldTree, newTree) {
