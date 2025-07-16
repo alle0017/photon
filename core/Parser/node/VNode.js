@@ -16,134 +16,11 @@ import { getDifference, isNodeArray } from "./Diff.js";
  *    tag: unknown,
  *    props: Map<string,unknown>,
  *    subscriptions: List<Unsubscriber>,
- *    shadow: VNode<T>[],
- *    instance: T | undefined,
- *    rendered: boolean,
  *    children: VNode<T>[],
- *    render(): void,
+ *    render(): T[],
  * }} VNode
  */
 
-/**
- * @template {ConcreteNode} T
- * @param {string} text 
- * @returns {VNode<T>}
- */
-function createText(text) {
-      return {
-            tag: text,
-            props: new Map(),
-            shadow: [],
-            subscriptions: new List(),
-            rendered: true,
-            instance: undefined,
-            children: [],
-            render() {
-                  this.rendered = true;
-                  this.instance = /**@type {T}*/(Renderer.createText(text));
-
-                  return this.instance;
-            }
-      };
-}
-
-/**
- * replaces the old node with the new one.
- * it expects both nodes to be rendered.
- * @param {VNode<ConcreteNode>} newNode 
- * @param {VNode<ConcreteNode>} oldNode 
- */
-function replace(newNode, oldNode) {
-      const instance = oldNode.instance ? oldNode.instance: oldNode.shadow.at(0).instance;
-
-      if (newNode.instance) {
-            instance.parentNode.replaceChild(oldNode.instance, newNode.instance);
-
-            if (oldNode.shadow.length <= 0) {
-                  return;
-            }
-
-            for (let i = 0; i < oldNode.shadow.length; i++) {
-                  const node = oldNode.shadow[i].instance;
-
-                  if (!node.parentNode) {
-                        continue;
-                  }
-
-                  node.parentNode.removeChild(node);
-            }
-
-            return;
-      }
-
-      if (newNode.shadow.length <= 0) {
-            // handle case in which new element is void
-            newNode.shadow.push(createText(''));
-      }
-
-      for (const node of newNode.shadow) {
-            instance.after(node.instance);
-      }
-
-      const parent = instance.parentNode;
-
-      for (const node of oldNode.shadow) {
-            parent.removeChild(node.instance);
-      }
-}
-
-/**
- * @template {ConcreteNode} T
- * @param {Reactive<unknown>} tag 
- * @param {Map<string,unknown>} props 
- * @param {VNode<T>[]} children 
- * @returns {VNode<T>}
- */
-function createReactive(tag, props, children) {
-      const unsubscribe = tag.subscribe(() => {
-
-            const tree = [];
-
-            if (Array.isArray(tag.value) && isNodeArray(tag.value)) {
-                  tree.push(...tag.value);
-            } else {
-                  tree.push(createText(/**@type {string} */(tag.value)));
-            }
-
-            const diff = getDifference(node.shadow, tree);
-
-            for (const delta of diff) {
-                  delta.node.render();
-                  node
-                        .shadow[delta.idx]
-                        .instance
-                        .parentNode
-                        .replaceChild(node.shadow[delta.idx].instance, delta.node.instance);
-            }
-      });
-
-      /**
-       * @type {VNode<T>}
-       */
-      const node = {
-            tag,
-            props,
-            shadow: [],
-            subscriptions: new List(),
-            rendered: true,
-            instance: undefined,
-            children,
-            render() {
-                  for (let i = 0; i < this.shadow.length; i++) {
-                        this.shadow[i].render();
-                  }
-            }
-      };
-
-      node.subscriptions.push(unsubscribe);
-
-      return node;
-}
 
 /**
  * @template {ConcreteNode} T
@@ -156,45 +33,157 @@ function createElement(tag, props, children) {
       return {
             tag,
             props,
-            shadow: [],
             subscriptions: new List(),
-            rendered: false,
-            instance: undefined,
             children,
             render() {
-                  this.rendered = true;
-                  this.instance = /**@type {T}*/(Renderer.createElement(tag));
+                  const root = /**@type {T}*/(Renderer.createElement(tag));
 
-                  for (let i = 0; i < this.children.length; i++) {
-                        this.children[i].render();
+                  for (const child of this.children) {
+                        child.render().forEach(node => root.appendChild(node));
                   }
+
+                  return [root];
             }
       };
 }
 
 /**
+ * convert any type into string
+ * @param {unknown} obj 
+ */
+function toString(obj) {
+      return Object
+                  .getPrototypeOf(
+                        obj || (typeof obj !== 'undefined' && typeof obj !== 'object') ? 
+                        obj : 
+                        ''
+                  ).toString();
+}
+
+/**
  * @template {ConcreteNode} T
- * @param {string} tag 
- * @param {Map<string,unknown>} props 
- * @param {VNode<T>[]} children 
+ * @param {Reactive<unknown>} state 
+ * @returns {VNode<T>[]}
+ */
+function createTreeFromReactive(state) {
+      const tree = [];
+
+      if (Array.isArray(state.value) && isNodeArray(state.value)) {
+            
+            if (tree.length <= 0) {
+                  tree.push(createText(''));
+            } else {
+                  tree.push(...state.value);
+            }
+      } else {
+            const text = toString(state.value);
+            tree.push(createText(text));
+      }
+
+      return /**@type {VNode<T>[]}*/(tree);
+}
+
+/**
+ * @template {ConcreteNode} T
+ * @param {T} sibling 
+ * @param {VNode<T>} node 
+ */
+function append(sibling, node) {
+      const html = node.render();
+
+      for (let i = 0; i < html.length; i++) {
+            sibling.after(html[i]);
+      }
+
+      return html;
+}
+
+/**
+ * @param {VNode<ConcreteNode>} node 
+ */
+function clearSubscriptions(node) {
+      let stack = [...node.children];
+
+      node.subscriptions.forEach(sub => sub());
+
+      for (let i = 0; i < stack.length; i++) {
+            stack[i].subscriptions.forEach(sub => sub());
+            stack = stack.concat(stack[i].children);
+      }
+}
+/**
+ * @template {ConcreteNode} T
+ * @param {Reactive<unknown>} state 
+ */
+function createReactive(state) {
+      /**@type {T[][]} */
+      let html = [];
+
+      const unsubscribe = state.subscribe(() => {
+            const tree = /**@type {VNode<T>[]}*/(createTreeFromReactive(state));
+            const diff = getDifference(node.children, tree);
+            
+            for (const dt of diff) {
+                  const branch = html[dt.idx];
+                  const nodes = append(branch[0], dt.node);
+                  
+                  for (let i = 0; i < branch.length; i++) {
+                        branch[i].parentNode.removeChild(branch[i]);
+                  }
+
+                  html[dt.idx] = nodes;
+                  clearSubscriptions(node.children[dt.idx]);
+                  node.children[dt.idx] = dt.node;
+            }
+
+            if (tree.length > html.length) {
+                  for (let i = html.length; i < tree.length; i++) {
+                        const last = html.at(-1)[0];
+                        html.push(append(last, tree[i]));
+                        node.children.push(tree[i]);
+                  }
+            } else if (tree.length < html.length) {
+                  for (let i = html.length; i >= tree.length; i--) {
+                        html.pop().forEach(node => node.parentNode.removeChild(node));
+                        clearSubscriptions(node.children.pop());
+                  }
+            }
+      });
+
+      /**@type {VNode<T>} */
+      const node =  {
+            tag: state,
+            props: new Map(),
+            subscriptions: new List(),
+            children: createTreeFromReactive(state),
+            render() {
+                  for (const child of this.children) {
+                        const tree = /**@type {T[]}*/(child.render());
+
+                        html.push(tree);
+                  }
+                  return html.flat();
+            }
+      };
+
+      node.subscriptions.push(unsubscribe);
+
+      return node;
+}
+
+/**
+ * @template {ConcreteNode} T
+ * @param {string} text
  * @returns {VNode<T>}
  */
-function createCustomElement(tag, props, children) {
-
-      props.set('children', children);
-
+function createText(text) {
       return {
-            tag,
-            props,
-            shadow: /**@type {VNode<T>[]}*/(Register.get(tag, props)),
+            tag: text,
+            props: new Map(),
             subscriptions: new List(),
-            rendered: true,
-            instance: undefined,
-            children,
+            children: [],
             render() {
-                  for (let i = 0; i < this.shadow.length; i++) {
-                        this.shadow[i].render();
-                  }
+                  return [/**@type {T}*/(Renderer.createText(text))];
             }
       };
 }
@@ -205,27 +194,34 @@ export const Builder = {
        * @param {string} tag 
        * @param {Map<string,unknown>} props 
        * @param {VNode<T>[]} children 
-       * @returns {VNode<T>}
+       * @returns {VNode<T>[]}
        */
       createElement(tag, props, children) {
-            if (Register.exists(tag)) {
-                  return createCustomElement(tag, props, children);
-            }
+            if (!Register.exists(tag)) {
+                  return [createElement(tag, props, children)];
+            } 
 
-            return createElement(tag, props, children);
+            props.set('children', children);
+            return /**@type {VNode<T>[]}*/(Register.get(tag, props));
       },
       /**
        * @template {ConcreteNode} T
-       * @param {string | Reactive<unknown>} tag 
-       * @param {Map<string,unknown>} props 
-       * @param {VNode<T>[]} children 
-       * @returns {VNode<T>}
+       * @param {string} text
+       * @returns {VNode<T>[]}
        */
-      createText(tag, props, children) {
-            if (tag instanceof Reactive) {
-                  return createReactive(tag, props, children);
-            }
+      createText(text) {
+            return [createText(text)];
+      },
+      /**
+       * @template {ConcreteNode} T
+       * @param {unknown} arg
+       * @returns {VNode<T>[]}
+       */
+      createArgElement(arg) {
+            if (arg instanceof Reactive) {
+                  return [createReactive(arg)];
+            } 
 
-            return createText(tag);
+            return [createText(toString(arg))];
       }
 }
