@@ -1,6 +1,6 @@
 /**@import ConcreteNode from "../Parser/Nodes/ConcreteNode" */
 
-import List from "../Util/List";
+import List from "../Util/List.js";
 
 /**
  * @template {ConcreteNode} T
