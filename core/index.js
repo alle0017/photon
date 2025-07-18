@@ -4,6 +4,7 @@ import Ref from "./signals/Reference.js";
 import Out from "./Util/Logger.js";
 import { html } from "./node/index.js";
 import Exception from "./signals/Exception.js";
+import Register from "./node/Register.js";
 /**@import {VNode} from "./node/VNode.js" */
 
 export {Signal, Ref, html};
@@ -79,7 +80,7 @@ export const GApp = {
        * @returns {typeof GApp}
        */
       registerComponent(renderer,tag = renderer.name){
-            this.builder.register(renderer,tag)
+            Register.register(renderer,tag)
             return this;
       },
 

@@ -1,3 +1,11 @@
+export const $error: {
+    /**
+     * register an event handler that is
+     * called each time an exception is thrown.
+     * @param sub 
+     */
+    catch(sub: (e: Error) => void): void
+}
 /**
  * Represents a reactive signal that tracks a value and notifies subscribers when it changes.
  * Signals are the core of the framework's reactivity system.

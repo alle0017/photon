@@ -1,8 +1,8 @@
 {
   "name": "@alle0017!/photonjs",
-  "version": "1.0.12",
+  "version": "1.0.14",
   "description": "lightweight js framework",
-  "main": "./core/index.js",
+  "main": "./index.js",
   "publishConfig": {
     "access": "public"
   },
