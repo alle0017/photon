@@ -1,4 +1,4 @@
-import List from "../../Util/List.js";
+import List from "../Util/List.js";
 /**@import ConcreteNode from "./ConcreteNode" */
 /**@import {VNode} from "./VNode" */
 

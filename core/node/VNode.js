@@ -4,15 +4,15 @@
 // Provides utilities for creating, updating, and managing virtual nodes (VNodes),
 // including reactivity, event handling, and attribute management.
 
-import List from "../../Util/List.js";
-import Reactive from "../../Signals/Reactive.js";
+import List from "../Util/List.js";
+import Reactive from "../Signals/Reactive.js";
 import { Renderer } from "./Renderer.js";
 import Register from "./Register.js";
 import { getDifference, isNodeArray } from "./Diff.js";
-import Ref from "../../Signals/Reference.js";
-import Exception from "../../Signals/Exception.js";
+import Ref from "../Signals/Reference.js";
+import Exception from "../Signals/Exception.js";
 /** @import ConcreteNode from "./ConcreteNode" */
-/** @import {Unsubscriber} from "../../Signals/Notifier" */
+/** @import {Unsubscriber} from "../Signals/Notifier" */
 
 
 /**
@@ -142,7 +142,7 @@ function toString(obj) {
 function createTreeFromReactive(state) {
       const tree = [];
       if (Array.isArray(state.value) && isNodeArray(state.value)) {
-            if (tree.length <= 0) {
+            if (state.value.length <= 0) {
                   tree.push(createText(''));
             } else {
                   tree.push(...state.value);
@@ -227,6 +227,7 @@ function createReactive(state) {
             subscriptions: new List(),
             children: createTreeFromReactive(state),
             render() {
+
                   for (const child of this.children) {
                         const tree = /**@type {T[]}*/(child.render());
                         html.push(tree);
