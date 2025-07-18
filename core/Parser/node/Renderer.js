@@ -1,9 +1,8 @@
-import Bucket from "./Bucket.js";
 /**@import ConcreteNode from "./ConcreteNode" */
 
 const createText = (() => {
-      /**@type {Bucket<Text>} */
-      const cache = new Bucket();
+      /**@type {Map<string,Text>} */
+      const cache = new Map();
       /**
        * @param {string} text 
        * @returns {ConcreteNode}
@@ -37,8 +36,8 @@ const clean = elem => {
 
 
 const createElement = (() => {
-      /**@type {Bucket<Element>} */
-      const cache = new Bucket();
+      /**@type {Map<string,Element>} */
+      const cache = new Map();
       /**
        * @param {string} elem
        * @returns {ConcreteNode}
@@ -51,7 +50,6 @@ const createElement = (() => {
 
             const node = document.createElement(elem);
             cache.set(elem,node);
-            //@ts-expect-error
             return node;
       }           
 })()
