@@ -1,4 +1,4 @@
-import List from "../Util/List";
+import List from "../Util/List.js";
 
 /**@import {Node} from "./Notifier" */
 export default class Exception {
