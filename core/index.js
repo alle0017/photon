@@ -1,13 +1,12 @@
 import Signal from "./signals/Signal.js";
 import Effect from "./signals/Effect.js";
 import Ref from "./signals/Reference.js";
-import css from "./css/CssParser.js";
 import Out from "./Util/Logger.js";
 import { html } from "./node/index.js";
 import Exception from "./signals/Exception.js";
 /**@import {VNode} from "./node/VNode.js" */
 
-export {css,Signal, Ref, html};
+export {Signal, Ref, html};
 
  
 export const $error = Exception;
