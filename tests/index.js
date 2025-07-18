@@ -9,11 +9,10 @@ function render(tree) {
       document.body.append(...(tree).flatMap(v => v.render()))
 }
 setTimeout(() => {
-      tests(v2);
-
-      tests(v1);
-
-}, 1000);
+      
+      tests(v2, 'framework v2');
+      tests(v1, 'framework v1');
+}, 100);
 
 function test_1(html) {
       console.log("TEST 1\n")
@@ -40,7 +39,7 @@ function test_3(html) {
       console.time('rendering of a list of values')
       render(html`
             - List
-            <ul>${new Array(1000).fill(1).map((_,i) => html`<li style=${i%2? 'color: red;': 'color: blue;'}>${i}</li>`)}</ul>
+            <ul>${new Array(10000).fill(1).map((_,i) => html`<li style=${i%2? 'color: red;': 'color: blue;'}>${i}</li>`)}</ul>
       `)
       console.timeEnd('rendering of a list of values')
 }
@@ -53,7 +52,26 @@ function test_4(html) {
       `)
       console.timeEnd('counter implementation')
 }
-function tests(html) {
-      console.log("TESTING IMPLEMENTATION OF HTML FUNCTION\n\n\n\n\n")
+function test_5(html) {
+      console.log("\nTEST 5\n")
+      console.time('rendering of a list of reactive values with change')
+      const s = $signal([1,2,3,4,5,6]);
+      render(html`
+            - List
+            <ul>${s.map((i) => html`<li style=${i%2? 'color: red;': 'color: blue;'}>${i}</li>`)}</ul>
+            <button @click=${() => {
+                  s.value.splice((s.value.length/2), 1);
+                  console.log(s.value)
+                  s.set(s.value);
+            }}>remove</button>
+            <button @click=${() => {
+                  s.value.push(s.value.length > 0? (s.value.at(-1) + 1): 0);
+                  s.set(s.value);
+            }}>add</button>
+      `)
+      console.timeEnd('rendering of a list of reactive values with change')
+}
+function tests(html, label) {
+      console.log(`TESTING IMPLEMENTATION OF HTML FUNCTION ${label}\n\n\n\n\n`)
       test_3(html)
 }
