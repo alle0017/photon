@@ -1,4 +1,4 @@
-export interface Parent<T extends Parent<any>> {
+export interface Parent<T = any> {
       appendChild(child: T): T;
       removeChild(child: T): void;
       parentNode: T | null;
@@ -16,7 +16,7 @@ interface TokenList {
  * that has attributes. it respect the DOM representation, 
  * but is preferred for portability the use of this interface
  */
-export default interface ConcreteNode extends Parent<ConcreteNode> {
+export default interface ConcreteNode extends Parent {
       addEventListener: ( event: string, callback: Function ) => void;
       setAttribute: ( name: string, value: string ) => void;
       classList: TokenList;
