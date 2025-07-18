@@ -1,4 +1,4 @@
-/**@import Signal from "./Signal.js";*/
+import Signal from "./Signal";
 
 export default class Scheduler {
       /**

@@ -1,6 +1,6 @@
 import List from "../Util/List.js";
+/**@import {Node} from "./Notifier.js" */
 
-/**@import {Node} from "./Notifier" */
 export default class Exception {
       /**
        * @type {List<(e: Error) => void>}

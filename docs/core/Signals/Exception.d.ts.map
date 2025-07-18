@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "Exception.d.ts",
+  "sourceRoot": "",
+  "sources": [
+    "../../../core/signals/Exception.js"
+  ],
+  "names": [],
+  "mappings": "AACA,yCAAyC;AAEzC;IACM;;OAEG;IACH,8BAFmB,KAAK,KAAK,IAAI,EAEP;IAE1B;;OAEG;IACH,0BAAc;IACd;;OAEG;IACH,yBAAa;IAEb,sBAKC;IAED;;;;;OAKG;IACH,sBAFe,KAAK,KAAK,IAAI,cAY5B;IAED;;;;;OAKG;IACH,oBAFW,KAAK,QAiBf;CACN;iBAjEgB,iBAAiB"
+}

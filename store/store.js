@@ -1,5 +1,5 @@
 import { $signal, } from "../core/index.js";
-import Effect from "../core/Signals/Effect.js";
+import Effect from "../core/signals/Effect.js";
 /**@import {Signal,} from "../core/index.js" */
 /**
  * @template {{}} T

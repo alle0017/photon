@@ -1,4 +1,4 @@
-/**@import ConcreteNode from "../Parser/Nodes/ConcreteNode" */
+/**@import ConcreteNode from "../node/ConcreteNode.js"*/
 
 import List from "../Util/List.js";
 
