@@ -52,12 +52,14 @@ function createElement(tag, props, children) {
  * @param {unknown} obj 
  */
 function toString(obj) {
-      return Object
-                  .getPrototypeOf(
-                        obj || (typeof obj !== 'undefined' && typeof obj !== 'object') ? 
-                        obj : 
-                        ''
-                  ).toString();
+      if (obj || (typeof obj !== 'undefined' && typeof obj !== 'object')) {
+            if (typeof obj != 'object') {
+                  return String(obj);
+            } else {
+                  return Object.getPrototypeOf(obj).toString()
+            } 
+      }
+      return '';
 }
 
 /**
@@ -183,6 +185,7 @@ function createText(text) {
             subscriptions: new List(),
             children: [],
             render() {
+                  console.log('str', text)
                   return [/**@type {T}*/(Renderer.createText(text))];
             }
       };
