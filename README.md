@@ -10,7 +10,6 @@ Photon embraces direct manipulation of DOM via signals, scoped styles, and decla
 
 * ⚡ Fine-grained **reactivity** with `Signal`s and `Effect`s
 * 🧠 Simple **component model** with `registerComponent`
-* 💡 Built-in **CSS scoping** with `css` function
 * 🧬 Efficient **virtual DOM** rendering with `html`
 * 🔬 **Lifecycle** control with `Ref`
 * 🧩 **Context API** for dependency injection
@@ -101,28 +100,6 @@ html`
 ```
 
 Returns an array of `VNode<HTMLElement>`.
-
----
-
-### 🎨 `css`
-
-Scoped CSS for your components:
-
-```js
-const key = css`
-  p {
-    color: blue;
-  }
-`;
-
-html`
-  <div scope=${key}>
-    <p>This is scoped!</p>
-  </div>
-`
-```
-
-Photon prepends a unique class like `.--Component--Scope__Key__` to every rule.
 
 ---
 
