@@ -35,6 +35,6 @@ export default class Register {
                   attribs[k] = v;
             }
 
-            return component(props);
+            return component(attribs);
       }
 }
