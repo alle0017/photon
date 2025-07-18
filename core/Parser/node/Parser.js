@@ -110,7 +110,7 @@ export function parse(template) {
 
       while (i < template.length) {
             if (template[i] == Ref.ARG[0] && isArgReference(template.substring(i))) {
-                  stack.at(-1).children.push(createText(template.slice(last,i-1)));
+                  stack.at(-1).children.push(createText(template.slice(last,i)));
                   stack.at(-1).children.push(createText(Ref.ARG));
                   i += Ref.ARG.length;
                   last = i;
@@ -128,7 +128,7 @@ export function parse(template) {
             if (!isOpeningTag(token)) {
 
                   if (isClosingTag(token)) {
-                        stack.at(-1).children.push(createText(template.slice(last,i-1)));
+                        stack.at(-1).children.push(createText(template.slice(last,i)));
                         stack.pop();
                         last = end + 1;
                         i = end + 1;
@@ -140,7 +140,7 @@ export function parse(template) {
                   continue;
             }
 
-            stack.at(-1).children.push(createText(template.slice(last,i-1)));
+            stack.at(-1).children.push(createText(template.slice(last,i)));
             last = end + 1;
 
             const node = tokenize(token);

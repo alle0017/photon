@@ -115,7 +115,6 @@ export function html(strings, ...args) {
             const i = stack.at(-1).i;
 
             if (tree[i].isText) {
-                  console.log(tree[i].text)
                   if (tree[i].text == Ref.ARG) {
                         //@ts-expect-error
                         stack.at(-1).children.push(...Builder.createArgElement(args[arg]));
