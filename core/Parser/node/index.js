@@ -84,6 +84,7 @@ function next(stack) {
  * @returns {number} the new offset inside the args array
  */
 function setProperties(leaf, args, offset) {
+
       for (const [k,v] of leaf.props) {
             if (v != Ref.ARG) {
                   continue;

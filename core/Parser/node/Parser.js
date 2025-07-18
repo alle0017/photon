@@ -13,7 +13,7 @@
  * }} Tree
  */
 export const Ref = {
-      ARG: '£:_--pRiVaTe__REACTIVE_PTR__v0\.0\/2024£'
+      ARG: '£:_--pRiVaTe__REACTIVE_PTR__v0\.0-2024£'
 }
 
 const ATTRIB_REGEX = new RegExp(`((${Ref.ARG})|@?[a-zA-Z_:][a-zA-Z0-9_\.:-]*)\\s*=\\s*(?:"([^"]*)"|'([^']*)'|([^\\s>]*))|([a-zA-Z_:][a-zA-Z0-9_.:-]*)`, 'g');
@@ -152,7 +152,6 @@ export function parse(template) {
             }
             i = end + 1;
       }
-
       stack.at(-1).children.push(createText(template.slice(last,template.length)));
       return stack[0].children;
 }
