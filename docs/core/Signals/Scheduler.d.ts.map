@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "Scheduler.d.ts",
+  "sourceRoot": "",
+  "sources": [
+    "../../../core/signals/Scheduler.js"
+  ],
+  "names": [],
+  "mappings": "AAAA,uCAAuC;AAEvC;IAMM;;;;OAIG;IACH,iDAaC;;CACN"
+}

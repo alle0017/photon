@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "Effect.d.ts",
+  "sourceRoot": "",
+  "sources": [
+    "../../../core/signals/Effect.js"
+  ],
+  "names": [],
+  "mappings": "AAEA,8CAA8C;AAE9C;;GAEG;AACH;IAmBM;;;;OAIG;IACH,6BAHkB,CAAC,gBAAgB,CAAC,KAAK,CAAC,eAC3B,SAAS,OAAO,CAAC,IAqB/B;IA7BD,kBAEC;IAND,eAEC;;CAgCN;qBAlDoB,eAAe"
+}

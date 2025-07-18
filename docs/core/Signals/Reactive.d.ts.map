@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "Reactive.d.ts",
+  "sourceRoot": "",
+  "sources": [
+    "../../../core/signals/Reactive.js"
+  ],
+  "names": [],
+  "mappings": "AAIA,uDAAuD;AAEvD;;;;GAIG;AACH,4CAFgB,QAAQ,CAAC,CAAC;IAGpB,oCAAoC;IAEpC,kCAEC;IAMD;;;OAGG;IACH,eAEC;IAED;;;;OAIG;IACH,0BAHiB,CAAC,KAAK,IAAI,gBAkB1B;IAED;;;;;OAKG;IACH,kCAHiB,CAAC,KAAK,OAAO,gBAwB7B;IAED;;;OAGG;IACH,sBAFW,CAAC,QAQX;;CACN;sBAzFqB,gBAAgB"
+}

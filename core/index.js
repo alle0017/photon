@@ -1,29 +1,14 @@
-import Parser from "./Parser/Parser.js"
-import Signal from "./Signals/Signal.js";
-import DOMRenderer from "./Parser/View/DOMRenderer.js";
-import Register from "./Parser/Register.js";
-import VNode from "./Parser/Nodes/VNode.js";
-import LinearDiffer from "./Parser/Diff/LinearDiffer.js";
-import Effect from "./Signals/Effect.js";
-import Ref from "./Signals/Reference.js";
+import Signal from "./signals/Signal.js";
+import Effect from "./signals/Effect.js";
+import Ref from "./signals/Reference.js";
 import css from "./css/CssParser.js";
-import VNodeBuilder from "./Parser/Nodes/VNodeBuilder.js";
 import Out from "./Util/Logger.js";
-import Exception from "./Signals/Exception.js";
+import { html } from "./node/index.js";
+import Exception from "./signals/Exception.js";
+/**@import {VNode} from "./node/VNode.js" */
 
-export {css,Signal,VNode, Ref};
+export {css,Signal, Ref, html};
 
-/**
- * 
- * @param {TemplateStringsArray} strings 
- * @param  {...unknown} args 
- * @returns {VNode<HTMLElement>[]}
- */
-export const html = ( strings, ...args ) => {
-      const tree = new Parser(GApp.builder).parse( strings, ...args );
-      Exception.notify();
-      return tree;
-}
  
 export const $error = Exception;
 
@@ -87,10 +72,6 @@ export const createContext = ctx => {
 }
 
 export const GApp = {
-      /**
-       * @type {VNodeBuilder<HTMLElement>}
-       */
-      builder: new VNodeBuilder( new DOMRenderer(), new Register(), LinearDiffer ),
 
       /**
        * method used to register a custom component
@@ -114,7 +95,7 @@ export const GApp = {
             
             try {
                   const tree = component();
-                  tree.forEach(node => root.append(node.render()));
+                  tree.forEach(node => root.append(...node.render()));
             } catch (e) {
                   $error.throw(e);
             }
