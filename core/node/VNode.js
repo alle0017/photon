@@ -5,14 +5,14 @@
 // including reactivity, event handling, and attribute management.
 
 import List from "../Util/List.js";
-import Reactive from "../Signals/Reactive.js";
+import Reactive from "../signals/Reactive.js";
 import { Renderer } from "./Renderer.js";
 import Register from "./Register.js";
 import { getDifference, isNodeArray } from "./Diff.js";
-import Ref from "../Signals/Reference.js";
-import Exception from "../Signals/Exception.js";
+import Ref from "../signals/Reference.js";
+import Exception from "../signals/Exception.js";
 /** @import ConcreteNode from "./ConcreteNode" */
-/** @import {Unsubscriber} from "../Signals/Notifier" */
+/** @import {Unsubscriber} from "../signals/Notifier" */
 
 
 /**
