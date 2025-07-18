@@ -12,7 +12,7 @@
  *    text: string 
  * }} Tree
  */
-const Ref = {
+export const Ref = {
       ARG: '£:_--pRiVaTe__REACTIVE_PTR__v0\.0\/2024£'
 }
 
@@ -110,8 +110,10 @@ export function parse(template) {
 
       while (i < template.length) {
             if (template[i] == Ref.ARG[0] && isArgReference(template.substring(i))) {
+                  stack.at(-1).children.push(createText(template.slice(last,i-1)));
                   stack.at(-1).children.push(createText(Ref.ARG));
-                  i += Ref.ARG.length + 1;
+                  i += Ref.ARG.length;
+                  last = i;
                   continue;
             }
 
