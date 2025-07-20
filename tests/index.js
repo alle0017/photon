@@ -1,5 +1,5 @@
 //import { html as v2 } from "../core/Parser/node/index.js"
-import {$signal, html as v1, $link} from "../core/index.js"
+import {$signal, html as v1, $ref} from "../core/index.js"
 /**@import {VNode} from "../core/Parser/node/VNode"*/
 /**
  * 
@@ -74,7 +74,7 @@ function test_6(html) {
       console.log("\nTEST 6\n")
       console.time('rendering with ref function')
       
-      const ref = /**@template {HTMLInputElement} */($link());
+      const ref = $ref();
 
       ref.onLoad(e => console.log(e));
 

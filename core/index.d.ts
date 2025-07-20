@@ -225,10 +225,10 @@ export type Ref<T> = {
      */
     bind(value: T): void;
     /**
-     * Registers a callback to be executed when the element is loaded into the DOM.
+     * Registers a callback to be executed when the element is loaded.
      * @param {(element: T) => void} watcher - The callback to execute on load.
      */
-    onLoad(watcher: (el: T) => void): void,
+    onLoad(watcher: (el: T) => void): () => void,
 }
 /**
  * Creates a reference to an HTML element, allowing lifecycle hooks and direct DOM manipulation.

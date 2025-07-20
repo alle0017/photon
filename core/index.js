@@ -29,14 +29,23 @@ export const $ref = () => {
              */
             bind(value) {
                   el = value;
-                  subs.forEach(sub => sub(el));
+                  if (el) {
+                        subs.forEach(sub => sub(el));
+                  }
             },
             /**
              * 
              * @param {(el: T) => void} watcher 
              */
             onLoad(watcher) {
-                  subs.push(watcher);
+                  let node = subs.push(watcher);
+                  return () => {
+                        if (!node) {
+                              return;
+                        }
+                        subs.remove(node);
+                        node = null;
+                  }
             },
       }
 }
