@@ -122,13 +122,12 @@ html`<CustomButton label="Click me" />`
 ---
 
 ### 🌳 `$ref`
-
-Access the underlying DOM element:
+This function can be used to access the underlying DOM element:
 
 ```js
 const myRef = $ref<HTMLDivElement>();
 
-html`<div ${myRef}>Hello</div>`;
+html`<div ref=${myRef.bind}>Hello</div>`;
 
 myRef.onLoad((el) => {
   el.style.background = 'lightgreen';
@@ -164,6 +163,12 @@ html`
   })}
 `
 ```
+
+---
+
+## 🗣️ `Directives`
+
+directives are all attributes of html elements that are passed as functions but are not events. this attributes are used to attach behaviors on element creation. They are used by `Ref` internally.
 
 ---
 
