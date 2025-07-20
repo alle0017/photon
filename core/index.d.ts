@@ -50,23 +50,6 @@ export type Effect<T> = {
 };
 
 /**
- * Represents a reference to an HTML element, allowing lifecycle hooks and direct DOM manipulation.
- * @template T - The type of the HTML element.
- */
-export type Ref<T extends HTMLElement> = {
-    /**
-     * Registers a callback to be executed when the element is loaded into the DOM.
-     * @param {(element: T) => void} callback - The callback to execute on load.
-     */
-    onLoad(callback: (element: T) => void): void;
-
-    /**
-     * The referenced HTML element.
-     */
-    element: T;
-};
-
-/**
  * Represents a virtual DOM node, which can be rendered into an actual DOM element.
  * @template T - The type of the HTML element.
  */
@@ -152,14 +135,6 @@ export function $effect<T>(callback: () => T, ...signals: Signal<unknown>[]): vo
  * @returns {() => void} - A function to unsubscribe the callback.
  */
 export function $watcher(callback: () => void, signal: Signal<unknown>): () => void;
-
-/**
- * Creates a reference to an HTML element, allowing lifecycle hooks and direct DOM manipulation.
- * @template T - The type of the HTML element.
- * @returns {Ref<T>} - The reference object.
- */
-export function $ref<T extends HTMLElement>(): Ref<T>;
-
 /**
  * Creates a context that can be retrieved later, enabling dependency injection.
  * Context can be retrieved using the returned function.
@@ -225,3 +200,39 @@ export declare const GApp: {
  * @returns {VNode<HTMLElement>} - The shadow DOM component.
  */
 export function Shadow({ children, mode }: { children: VNode<HTMLElement>[]; mode: 'open' | 'closed'; }): VNode<HTMLElement>;
+/**
+ * Represents a reference to an HTML element, allowing lifecycle hooks and direct DOM manipulation.
+ * @template T - The type of the HTML element.
+ */
+export type Ref<T> = {
+    /**
+     * The referenced HTML element.
+     */
+    readonly element: T;
+    /**
+     * set the value of the reference
+     * to the specified value. 
+     * this function can be used to 
+     * enable dependency injection
+     * of native html elements
+     * @param value 
+        @example
+        ```js
+        const ref = $ref()
+        ...
+        html`<input ref=${ref.bind}/>`
+        ```
+     */
+    bind(value: T): void;
+    /**
+     * Registers a callback to be executed when the element is loaded into the DOM.
+     * @param {(element: T) => void} watcher - The callback to execute on load.
+     */
+    onLoad(watcher: (el: T) => void): void,
+}
+/**
+ * Creates a reference to an HTML element, allowing lifecycle hooks and direct DOM manipulation.
+ * @template T - The type of the HTML element.
+ * @returns {Ref<T>} - The reference object.
+ */
+export const $ref: <T>() => Ref<T>

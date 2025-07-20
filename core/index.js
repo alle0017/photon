@@ -1,16 +1,45 @@
 import Signal from "./signals/Signal.js";
 import Effect from "./signals/Effect.js";
-import Ref from "./signals/Reference.js";
 import Out from "./Util/Logger.js";
 import { html } from "./node/index.js";
 import Exception from "./signals/Exception.js";
 import Register from "./node/Register.js";
+import List from "./Util/List.js";
 /**@import {VNode} from "./node/VNode.js" */
 
-export {Signal, Ref, html};
+export {Signal, html};
 
  
 export const $error = Exception;
+/**
+ * @template T
+ * @returns {import("./index.js").Ref<T>}
+ */
+export const $ref = () => {
+      /**@type {List<(el: T) => void>} */
+      const subs = new List();
+      /**@type {T} */
+      let el;
+      return {
+            get element() {
+                  return el;
+            },
+            /**
+             * @param {T} value
+             */
+            bind(value) {
+                  el = value;
+                  subs.forEach(sub => sub(el));
+            },
+            /**
+             * 
+             * @param {(el: T) => void} watcher 
+             */
+            onLoad(watcher) {
+                  subs.push(watcher);
+            },
+      }
+}
 
 /**
  * @template T
@@ -42,12 +71,6 @@ export const $effect = (callback,...signals) => new Effect(callback,...signals);
  * @param {Signal<unknown>} signal 
  */
 export const $watcher = ( callback, signal ) => signal.subscribe(callback);
-
-/**
- * @template {HTMLElement} T
- * @returns {Ref<T>}
- */
-export const $ref = () => new Ref();
 
 /**
  * create a context that can be retrieved by calling 
@@ -144,5 +167,5 @@ export function Shadow({ children, mode }) {
             //@ts-ignore
             GApp.createRoot(() => children, el.shadowRoot);
       });
-      return html`<span ref=${root}></span>`
+      return html`<span ref=${root.bind}></span>`
 }

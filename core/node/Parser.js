@@ -1,3 +1,17 @@
+ /** 
+ * Parser.js - HTML-like template parser for Photon.
+ *
+ * This module provides a lightweight parser for converting template strings into a tree structure
+ * suitable for VNode construction. It supports argument placeholders, attribute parsing, and nested tags.
+ *
+ * Implementation Notes:
+ * - The parser is not a full HTML parser, but is designed for speed and simplicity for template use cases.
+ * - Argument placeholders are replaced with a unique string (Ref.ARG) to avoid collisions.
+ * - Attribute parsing uses a single regex (ATTRIB_REGEX) to extract key-value pairs and boolean attributes.
+ * - The parser uses a stack to manage nested tags and builds a tree of nodes and text.
+ * - Closing tags pop the stack, and self-closing tags are detected by the presence of / before >.
+ * - The output tree is used by the VNode builder to create the actual virtual DOM nodes.
+ */
 /**
  * @typedef {{
  *    isText: false,

@@ -1,5 +1,5 @@
-import { html as v2 } from "../core/Parser/node/index.js"
-import {$signal, html as v1} from "../core/index.js"
+//import { html as v2 } from "../core/Parser/node/index.js"
+import {$signal, html as v1, $link} from "../core/index.js"
 /**@import {VNode} from "../core/Parser/node/VNode"*/
 /**
  * 
@@ -10,7 +10,6 @@ function render(tree) {
 }
 setTimeout(() => {
       
-      tests(v2, 'framework v2');
       tests(v1, 'framework v1');
 }, 100);
 
@@ -71,7 +70,20 @@ function test_5(html) {
       `)
       console.timeEnd('rendering of a list of reactive values with change')
 }
+function test_6(html) {
+      console.log("\nTEST 6\n")
+      console.time('rendering with ref function')
+      
+      const ref = /**@template {HTMLInputElement} */($link());
+
+      ref.onLoad(e => console.log(e));
+
+      render(html`
+            <h1 ref=${ref.bind}>HI</h1>
+      `)
+      console.timeEnd('rendering with ref function')
+}
 function tests(html, label) {
       console.log(`TESTING IMPLEMENTATION OF HTML FUNCTION ${label}\n\n\n\n\n`)
-      test_3(html)
+      test_6(html)
 }

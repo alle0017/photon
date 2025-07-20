@@ -9,7 +9,6 @@ import Reactive from "../signals/Reactive.js";
 import { Renderer } from "./Renderer.js";
 import Register from "./Register.js";
 import { getDifference, isNodeArray } from "./Diff.js";
-import Ref from "../signals/Reference.js";
 import Exception from "../signals/Exception.js";
 /** @import ConcreteNode from "./ConcreteNode" */
 /** @import {Unsubscriber} from "../signals/Notifier" */
@@ -69,13 +68,13 @@ function addListener(root, key, value) {
 function setAttribute(root, key, value) {
       if ((key.startsWith("on") || key.startsWith("@")) && typeof value === "function") {
             addListener(root, key.replace(/@|on/,'').toLowerCase(), value);
-      } else if (value instanceof Ref) {
-            value.element = root;
       } else if (value instanceof Reactive) {
             root.setAttribute(key, value.value);
             return value.subscribe(v => {
                   setAttribute(root, key, v);
             });
+      } else if (typeof value == 'function') {
+            value(root);
       } else {
             root.setAttribute(key, /**@type {string}*/(value));
       }
