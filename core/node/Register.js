@@ -1,6 +1,8 @@
 /**@import ConcreteNode from "./ConcreteNode" */
 /**@import {VNode} from "./VNode" */
 
+import Exception from "../signals/Exception.js";
+
 export default class Register {
       /**
        * @type {Map<string,(props: {}) => VNode<ConcreteNode>[]>}
@@ -35,6 +37,11 @@ export default class Register {
                   attribs[k] = v;
             }
 
-            return component(attribs);
+            try {
+                  return component(attribs);
+            } catch (e) {
+                  Exception.throw(e);
+                  return [];
+            }
       }
 }

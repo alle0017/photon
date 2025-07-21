@@ -132,6 +132,8 @@ export const GApp = {
                   $error.throw(e);
             }
 
+            $error.notify();
+
             return this;
       },
 

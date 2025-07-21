@@ -19,6 +19,7 @@
 /** @import {VNode} from "./VNode" */
 /** @import { Tree, ParentTree } from "./Parser.js" */
 /** @import ConcreteNode from "./ConcreteNode" */
+import Exception from "../signals/Exception.js";
 import { parse, Ref } from "./Parser.js";
 import { Builder } from "./VNode.js";
 
@@ -163,5 +164,6 @@ export function html(strings, ...args) {
                   next(stack);
             }
       }
+      Exception.notify();
       return root;
 }

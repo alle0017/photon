@@ -88,8 +88,8 @@ function createText(text = "") {
 function tokenize(token) {
       const clean = token
             .replace('<', '')
+            .replace('/>', '')
             .replace('>', '')
-            .replace('/', '')
             .replaceAll(/ ( )+/ig, ' ')
             .replaceAll(/( |\n)+=( |\n)+/ig, '=')
             .replaceAll('\n', ' ');

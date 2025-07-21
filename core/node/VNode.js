@@ -74,7 +74,11 @@ function setAttribute(root, key, value) {
                   setAttribute(root, key, v);
             });
       } else if (typeof value == 'function') {
-            value(root);
+            try {
+                  value(root);
+            } catch (e) {
+                  Exception.throw(e);
+            }
       } else {
             root.setAttribute(key, /**@type {string}*/(value));
       }
