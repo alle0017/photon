@@ -14,7 +14,7 @@ export default class Register {
        * @param {string} key 
        */
       static register(creator, key = creator.name) {
-            this.#map.set(key, creator);
+            Register.#map.set(key, creator);
       }
       /**
        * check if exists any component with 
@@ -22,7 +22,7 @@ export default class Register {
        * @param {string} key 
        */
       static exists(key) {
-            return this.#map.has(key);
+            return Register.#map.has(key);
       }
       /**
        * return the component with the specified name
@@ -30,10 +30,13 @@ export default class Register {
        * @param {Map<string,unknown>} props 
        */
       static get(key, props) {
-            const component = this.#map.get(key);
+            const component = Register.#map.get(key);
             const attribs = {};
 
-            for (const [k,v] of props) {
+            for (let [k,v] of props) {
+                  if (k.startsWith('@')) {
+                        k = k.replace(k.at(1), k.at(1).toUpperCase()).replace('@', 'on')
+                  }
                   attribs[k] = v;
             }
 
