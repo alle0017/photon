@@ -15,12 +15,18 @@ export const $error = Exception;
  * @template T
  * @returns {import("./index.js").Ref<T>}
  */
-export const $ref = () => {
+export function $ref() { 
+      if (!$ref.$symbol) {
+            $ref.$symbol = Symbol('$$Ref');
+      }
+
       /**@type {List<(el: T) => void>} */
       const subs = new List();
       /**@type {T} */
       let el;
       return {
+            //@ts-ignore
+            $symbol: $ref.$symbol,
             get element() {
                   return el;
             },
@@ -49,6 +55,15 @@ export const $ref = () => {
             },
       }
 }
+/**
+ * @type {symbol}
+ */
+$ref.$symbol = undefined;
+/**
+ * @param {unknown} o
+ */
+export const isRef = o => o && typeof o === 'object' && '$symbol' in o && o.$symbol === $ref.$symbol;
+
 
 /**
  * @template T
