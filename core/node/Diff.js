@@ -12,8 +12,7 @@ export const isNode = value => {
 
   const v = /**@type {Partial<VNode<T>>}*/(value);
 
-  return typeof v.tag === 'string' &&
-    v.props instanceof Map &&
+  return v.props instanceof Map &&
     v.subscriptions &&
     Array.isArray(v.children) &&
     typeof v.render === 'function';
