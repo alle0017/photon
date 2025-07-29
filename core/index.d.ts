@@ -1,4 +1,4 @@
-export const $error: {
+export declare const $error: {
     /**
      * register an event handler that is
      * called each time an exception is thrown.
@@ -67,7 +67,7 @@ export type VNode<T extends HTMLElement> = {
  * @param {...unknown} args - The template arguments.
  * @returns {VNode<HTMLElement>[]} - An array of virtual DOM nodes.
  */
-export function html(strings: TemplateStringsArray, ...args: unknown[]): VNode<HTMLElement>[];
+export declare function html(strings: TemplateStringsArray, ...args: unknown[]): VNode<HTMLElement>[];
 
 /**
  * Creates a reactive signal, which tracks a value and notifies subscribers when it changes.
@@ -92,7 +92,7 @@ export function html(strings: TemplateStringsArray, ...args: unknown[]): VNode<H
  * @param {T} value - The initial value of the signal.
  * @returns {Signal<T>} - The reactive signal.
  */
-export function $signal<T>(value: T): Signal<T>;
+export declare function $signal<T>(value: T): Signal<T>;
 
 /**
  * Creates a reactive effect that recalculates whenever its dependencies change.
@@ -113,7 +113,7 @@ export function $signal<T>(value: T): Signal<T>;
  * @param {() => T} callback - The effect callback.
  * @param {...Signal<unknown>} signals - The dependencies of the effect.
  */
-export function $effect<T>(callback: () => T, ...signals: Signal<unknown>[]): void;
+export declare function $effect<T>(callback: () => T, ...signals: Signal<unknown>[]): void;
 
 /**
  * Subscribes to a signal and executes a callback whenever the signal's value changes.
@@ -134,7 +134,7 @@ export function $effect<T>(callback: () => T, ...signals: Signal<unknown>[]): vo
  * @param {Signal<unknown>} signal - The signal to subscribe to.
  * @returns {() => void} - A function to unsubscribe the callback.
  */
-export function $watcher(callback: () => void, signal: Signal<unknown>): () => void;
+export declare function $watcher(callback: () => void, signal: Signal<unknown>): () => void;
 /**
  * Creates a context that can be retrieved later, enabling dependency injection.
  * Context can be retrieved using the returned function.
@@ -152,7 +152,7 @@ export function $watcher(callback: () => void, signal: Signal<unknown>): () => v
  * @param {T} ctx - The context value.
  * @returns {() => T} - A function to retrieve the context value.
  */
-export function createContext<T>(ctx: T): () => T;
+export declare function createContext<T>(ctx: T): () => T;
 
 /**
  * Represents the main application object, providing methods for component registration, root creation, and plugin usage.
@@ -199,7 +199,7 @@ export declare const GApp: {
  * @param {{ children: VNode<HTMLElement>[]; mode: 'open' | 'closed'; }} param0 - The shadow component options.
  * @returns {VNode<HTMLElement>} - The shadow DOM component.
  */
-export function Shadow({ children, mode }: { children: VNode<HTMLElement>[]; mode: 'open' | 'closed'; }): VNode<HTMLElement>;
+export declare function Shadow({ children, mode }: { children: VNode<HTMLElement>[]; mode: 'open' | 'closed'; }): VNode<HTMLElement>;
 /**
  * Represents a reference to an HTML element, allowing lifecycle hooks and direct DOM manipulation.
  * @template T - The type of the HTML element.
@@ -235,4 +235,9 @@ export type Ref<T> = {
  * @template T - The type of the HTML element.
  * @returns {Ref<T>} - The reference object.
  */
-export const $ref: <T>() => Ref<T>
+export declare const $ref: <T>() => Ref<T>;
+/**
+ * returns a promise that will be resolved when all signals 
+ * have been updated
+ */
+export declare const $tick: () => Promise<void>;

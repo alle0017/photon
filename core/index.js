@@ -5,11 +5,12 @@ import { html } from "./node/index.js";
 import Exception from "./signals/Exception.js";
 import Register from "./node/Register.js";
 import List from "./Util/List.js";
+import Reactive from "./signals/Reactive.js";
 /**@import {VNode} from "./node/VNode.js" */
 
 export {Signal, html};
 
- 
+export const $tick = Reactive.scheduler.tick;
 export const $error = Exception;
 /**
  * @template T
