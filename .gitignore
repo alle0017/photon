@@ -1,3 +1,4 @@
 .DS_Store
 .npmignore
 .assets
+node_modules

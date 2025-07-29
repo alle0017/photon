@@ -2,7 +2,8 @@
       // Change this to match your project
       "include": [
             "./store/**/*",
-            "./core/**/*"
+            "./core/**/*",
+            "./light-bulb.js/**/*"
       ],
       "compilerOptions": {
             // Tells TypeScript to read JS files, as
