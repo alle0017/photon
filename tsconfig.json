@@ -3,7 +3,7 @@
       "include": [
             "./store/**/*",
             "./core/**/*",
-            "./light-bulb.js/**/*"
+            "./meta/**/*"
       ],
       "compilerOptions": {
             // Tells TypeScript to read JS files, as
