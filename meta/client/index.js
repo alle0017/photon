@@ -2,7 +2,7 @@
 /**@typedef {'inner' | "outer" | "append" | "prepend"} HTMLPatchMode */
 /**PURE */
 
-import List from "./List";
+import List from "./List.js";
 /**
  * basic events are:
  * - fetch
