@@ -241,3 +241,11 @@ export declare const $ref: <T>() => Ref<T>;
  * have been updated
  */
 export declare const $tick: () => Promise<void>;
+/**
+ * utility type that represent any
+ * element that can be mapped in a
+ * black-box oriented manner.
+ */
+export type Mappable<T> = { 
+    map(lambda: (item: T) => void): void 
+}
