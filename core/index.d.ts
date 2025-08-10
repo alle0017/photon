@@ -1,3 +1,13 @@
+export type Reactive<T> = { 
+    value: T,
+    /**
+     * Subscribes a callback to be executed whenever the signal's value changes.
+     * @param {() => void} callback - The callback to execute on value change.
+     * @returns {() => void} - A function to unsubscribe the callback.
+     */
+    subscribe(callback: () => void): () => void;
+};
+
 export declare const $error: {
     /**
      * register an event handler that is
@@ -13,41 +23,21 @@ export declare const $error: {
  */
 export type Signal<T> = {
     /**
-     * The current value of the signal.
-     */
-    value: T;
-    /**
      * discouraged way of setting
      * signal value. bypass type checking,
      * useful for objects that keep their reference
      * @param value 
      */
     set(value: T): void,
-    /**
-     * Subscribes a callback to be executed whenever the signal's value changes.
-     * @param {() => void} callback - The callback to execute on value change.
-     * @returns {() => void} - A function to unsubscribe the callback.
-     */
-    subscribe(callback: () => void): () => void;
-};
+    map<V>(callback: T extends (infer K)[] ? (v: K, index: number) => V : (v: T) => V): Effect<any>
+} & Reactive<T>;
 
 /**
  * Represents a reactive signal that tracks a value and notifies subscribers when it changes.
  * Signals are the core of the framework's reactivity system.
  * @template T - The type of the value being tracked.
  */
-export type Effect<T> = {
-    /**
-     * The current value of the signal.
-     */
-    value: T;
-    /**
-     * Subscribes a callback to be executed whenever the signal's value changes.
-     * @param {() => void} callback - The callback to execute on value change.
-     * @returns {() => void} - A function to unsubscribe the callback.
-     */
-    subscribe(callback: () => void): () => void;
-};
+export type Effect<T> = Reactive<T>;
 
 /**
  * Represents a virtual DOM node, which can be rendered into an actual DOM element.
@@ -113,7 +103,7 @@ export declare function $signal<T>(value: T): Signal<T>;
  * @param {() => T} callback - The effect callback.
  * @param {...Signal<unknown>} signals - The dependencies of the effect.
  */
-export declare function $effect<T>(callback: () => T, ...signals: Signal<unknown>[]): void;
+export declare function $effect<T>(callback: () => T, ...signals: Reactive<unknown>[]): void;
 
 /**
  * Subscribes to a signal and executes a callback whenever the signal's value changes.
@@ -134,7 +124,7 @@ export declare function $effect<T>(callback: () => T, ...signals: Signal<unknown
  * @param {Signal<unknown>} signal - The signal to subscribe to.
  * @returns {() => void} - A function to unsubscribe the callback.
  */
-export declare function $watcher(callback: () => void, signal: Signal<unknown>): () => void;
+export declare function $watcher(callback: () => void, signal: Reactive<unknown>): () => void;
 /**
  * Creates a context that can be retrieved later, enabling dependency injection.
  * Context can be retrieved using the returned function.
