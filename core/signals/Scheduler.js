@@ -17,7 +17,7 @@ export default class Scheduler {
             this.#createTicker();
       }
       #createTicker() {
-            if (this.#tick == undefined) {
+            if (this.#tick !== undefined) {
                   return;
             }
             this.#tick = new Promise(resolve => {
@@ -43,7 +43,10 @@ export default class Scheduler {
                         k.set(v);
                   }
                   this.#schedule.clear();
-                  this.#resolver();
+
+                  if (this.#resolver) {
+                        this.#resolver();
+                  }
                   this.tick = undefined;
             });
       }

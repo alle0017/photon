@@ -239,3 +239,4 @@ export declare const $tick: () => Promise<void>;
 export type Mappable<T> = { 
     map(lambda: (item: T) => void): void 
 }
+export declare const isRef: (o: {}) => o is Ref<unknown>;

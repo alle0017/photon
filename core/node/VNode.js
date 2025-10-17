@@ -66,6 +66,8 @@ function addListener(root, key, value) {
  * @returns {Unsubscriber|null} - Unsubscribe function for reactivity, or null.
  */
 function setAttribute(root, key, value) {
+      const SPECIAL_ATTRIBUTES = ['value', 'id', 'checked', 'selected', 'volume', 'currentTime', 'muted'];
+
       if ((key.startsWith("on") || key.startsWith("@")) && typeof value === "function") {
             addListener(root, key.replace(/@|on/,'').toLowerCase(), value);
       } else if (value instanceof Reactive) {
@@ -79,12 +81,14 @@ function setAttribute(root, key, value) {
             } catch (e) {
                   Exception.throw(e);
             }
+      } else if (SPECIAL_ATTRIBUTES.includes(key) && key in root) {
+            root[key] = /**@type {string}*/(value);
       } else {
             root.setAttribute(key, /**@type {string}*/(value));
       }
+      
       return null;
 }
-
 /**
  * Creates a VNode representing an element with the given tag, props, and children.
  * The returned VNode can be rendered to produce a concrete DOM node.
@@ -217,7 +221,7 @@ function createReactive(state) {
                         node.children.push(tree[i]);
                   }
             } else if (tree.length < html.length) {
-                  for (let i = html.length; i >= tree.length; i--) {
+                  for (let i = (html.length-1); i >= tree.length; i--) {
                         html.pop().forEach(node => node.parentNode.removeChild(node));
                         clearSubscriptions(node.children.pop());
                   }
